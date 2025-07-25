@@ -8,18 +8,16 @@ public class MedicoAfiliado extends Cliente {
     private String apellidos;
     private String cedula;
     private String codigoSanitario;
-    private String telefono;
 
     public MedicoAfiliado() {
     }
 
-    public MedicoAfiliado(Long id, String username, String email, String nombres, String apellidos, String cedula, String codigoSanitario, String telefono) {
+    public MedicoAfiliado(Long id, String username, String email, String nombres, String apellidos, String cedula, String codigoSanitario) {
         super(id, username, email);
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.cedula = cedula;
         this.codigoSanitario = codigoSanitario;
-        this.telefono = telefono;
     }
 
     public String getNombres() {
@@ -52,13 +50,5 @@ public class MedicoAfiliado extends Cliente {
 
     public void setCodigoSanitario(String codigoSanitario) {
         this.codigoSanitario = codigoSanitario;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
     }
 }

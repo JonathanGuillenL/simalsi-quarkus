@@ -7,17 +7,15 @@ public class ClienteEspontaneo extends Cliente {
     private String nombres;
     private String apellidos;
     private String cedula;
-    private String telefono;
 
     public ClienteEspontaneo() {
     }
 
-    public ClienteEspontaneo(Long id, String username, String email, String nombres, String apellidos, String cedula, String telefono) {
+    public ClienteEspontaneo(Long id, String username, String email, String nombres, String apellidos, String cedula) {
         super(id, username, email);
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.cedula = cedula;
-        this.telefono = telefono;
     }
 
     public String getNombres() {
@@ -42,13 +40,5 @@ public class ClienteEspontaneo extends Cliente {
 
     public void setCedula(String cedula) {
         this.cedula = cedula;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
     }
 }

@@ -6,7 +6,6 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.lab.simalsi.cliente.application.ClienteService;
 import org.lab.simalsi.cliente.application.CrearClienteEspontaneoDto;
