@@ -6,6 +6,6 @@ public record PageDto<T>(
     List<T> data,
     int currentPage,
     int size,
-    int totalPage
+    int totalPages
 ) {
 }
