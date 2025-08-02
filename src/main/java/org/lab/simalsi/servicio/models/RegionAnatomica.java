@@ -1,4 +1,4 @@
-package org.lab.simalsi.cliente.models;
+package org.lab.simalsi.servicio.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,17 +6,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class TipoCliente {
-
+public class RegionAnatomica {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String descripcion;
 
-    public TipoCliente() {
-    }
+    public RegionAnatomica(){}
 
-    public TipoCliente(Long id, String descripcion) {
+    public RegionAnatomica(Long id, String descripcion) {
         this.id = id;
         this.descripcion = descripcion;
     }
@@ -36,4 +36,7 @@ public class TipoCliente {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    
+
 }

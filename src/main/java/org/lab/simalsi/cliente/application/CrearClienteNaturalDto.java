@@ -1,12 +1,11 @@
 package org.lab.simalsi.cliente.application;
 
-public record CrearClienteEspontaneoDto(
+public record CrearClienteNaturalDto(
     String nombres,
     String apellidos,
     String cedula,
     String telefono,
     String username,
-    String email,
-    Long tipoId
+    String email
 ) {
 }
