@@ -3,6 +3,7 @@ package org.lab.simalsi.solicitud.models;
 import jakarta.persistence.*;
 import org.lab.simalsi.colaborador.models.Colaborador;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,9 @@ public class Muestra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime fechaProcesamiento;
+    private LocalDate fechaIngreso;
+
+    private LocalDate fechaProcesamiento;
 
     private Integer numeroDeCortes;
 
@@ -29,8 +32,9 @@ public class Muestra {
     public Muestra() {
     }
 
-    public Muestra(Long id, LocalDateTime fechaProcesamiento, Integer numeroDeCortes, Double pesoMuestra, String descripcionMacroscopica, Colaborador histotecnologo, List<Lamina> laminas) {
+    public Muestra(Long id, LocalDate fechaIngreso, LocalDate fechaProcesamiento, Integer numeroDeCortes, Double pesoMuestra, String descripcionMacroscopica, Colaborador histotecnologo, List<Lamina> laminas) {
         this.id = id;
+        this.fechaIngreso = fechaIngreso;
         this.fechaProcesamiento = fechaProcesamiento;
         this.numeroDeCortes = numeroDeCortes;
         this.pesoMuestra = pesoMuestra;
@@ -47,11 +51,19 @@ public class Muestra {
         this.id = id;
     }
 
-    public LocalDateTime getFechaProcesamiento() {
+    public LocalDate getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(LocalDate fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public LocalDate getFechaProcesamiento() {
         return fechaProcesamiento;
     }
 
-    public void setFechaProcesamiento(LocalDateTime fechaProcesamiento) {
+    public void setFechaProcesamiento(LocalDate fechaProcesamiento) {
         this.fechaProcesamiento = fechaProcesamiento;
     }
 

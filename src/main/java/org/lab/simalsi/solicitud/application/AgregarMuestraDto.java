@@ -1,12 +1,14 @@
 package org.lab.simalsi.solicitud.application;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 public record AgregarMuestraDto(
-    LocalDateTime fechaProcesamiento,
+    LocalDate fechaIngreso,
+    LocalDate fechaProcesamiento,
     Integer numeroDeCortes,
     Double pesoMuestra,
     String descripcionMacroscopica,
-    Long solicitudId
+    List<AgregarLaminaDto> laminas
 ) {
 }

@@ -13,14 +13,17 @@ public class ArchivoAdjunto {
 
     private String ubicacion;
 
+    private String descripcion;
+
     private boolean activo;
 
     public ArchivoAdjunto() {
     }
 
-    public ArchivoAdjunto(Long id, String ubicacion, boolean activo) {
+    public ArchivoAdjunto(Long id, String ubicacion, String descripcion, boolean activo) {
         this.id = id;
         this.ubicacion = ubicacion;
+        this.descripcion = descripcion;
         this.activo = activo;
     }
 
@@ -38,6 +41,14 @@ public class ArchivoAdjunto {
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public boolean isActivo() {

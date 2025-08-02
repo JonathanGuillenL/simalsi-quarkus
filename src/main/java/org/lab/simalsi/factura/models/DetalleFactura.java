@@ -1,6 +1,7 @@
 package org.lab.simalsi.factura.models;
 
 import jakarta.persistence.*;
+import org.lab.simalsi.servicio.models.ServicioLaboratorio;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -13,13 +14,17 @@ public class DetalleFactura {
 
     private boolean facturado;
 
+    @ManyToOne
+    private ServicioLaboratorio servicioLaboratorio;
+
     public DetalleFactura() {
     }
 
-    public DetalleFactura(Long id, Double precio, boolean facturado) {
+    public DetalleFactura(Long id, Double precio, boolean facturado, ServicioLaboratorio servicioLaboratorio) {
         this.id = id;
         this.precio = precio;
         this.facturado = facturado;
+        this.servicioLaboratorio = servicioLaboratorio;
     }
 
     public Long getId() {
@@ -44,5 +49,17 @@ public class DetalleFactura {
 
     public void setFacturado(boolean facturado) {
         this.facturado = facturado;
+    }
+
+    public ServicioLaboratorio getServicioLaboratorio() {
+        return servicioLaboratorio;
+    }
+
+    public void setServicioLaboratorio(ServicioLaboratorio servicioLaboratorio) {
+        this.servicioLaboratorio = servicioLaboratorio;
+    }
+
+    public Double calcularPrecioTotal() {
+        return precio;
     }
 }

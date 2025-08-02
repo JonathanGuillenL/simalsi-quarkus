@@ -1,9 +1,10 @@
 package org.lab.simalsi.solicitud.application;
 
 public record CrearSolicitudCGODto(
-    Long recepcionistaId,
     Long clienteId,
     Long pacienteId,
+    Long medicoTratanteId,
+    Long servicioLaboratorioId,
     String observaciones
 ) {
 }

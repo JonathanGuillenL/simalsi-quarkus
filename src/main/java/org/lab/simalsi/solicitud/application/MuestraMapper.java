@@ -8,6 +8,7 @@ public class MuestraMapper {
 
     public Muestra toModel(AgregarMuestraDto muestraDto) {
         var muestra = new Muestra();
+        muestra.setFechaIngreso(muestraDto.fechaIngreso());
         muestra.setFechaProcesamiento(muestraDto.fechaProcesamiento());
         muestra.setNumeroDeCortes(muestraDto.numeroDeCortes());
         muestra.setPesoMuestra(muestraDto.pesoMuestra());

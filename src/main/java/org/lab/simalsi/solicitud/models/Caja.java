@@ -15,7 +15,7 @@ public class Caja {
 
     private Integer numeroFilas;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "caja_id", referencedColumnName = "id")
     private List<Lamina> laminas;
 
@@ -60,5 +60,13 @@ public class Caja {
 
     public void setLaminas(List<Lamina> laminas) {
         this.laminas = laminas;
+    }
+
+    public boolean addLamina(Lamina lamina) {
+        return laminas.add(lamina);
+    }
+
+    public boolean addLaminas(List<Lamina> laminas) {
+        return this.laminas.addAll(laminas);
     }
 }

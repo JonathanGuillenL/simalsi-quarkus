@@ -6,7 +6,6 @@ import jakarta.ws.rs.NotFoundException;
 
 import java.util.stream.Stream;
 
-@Converter(autoApply = true)
 public class SolicitudEstadoConverter implements AttributeConverter<SolicitudEstado, Integer> {
 
     @Override
@@ -19,6 +18,9 @@ public class SolicitudEstadoConverter implements AttributeConverter<SolicitudEst
 
     @Override
     public SolicitudEstado convertToEntityAttribute(Integer integer) {
+        if (integer == null) {
+            return null;
+        }
         return Stream.of(SolicitudEstado.values())
             .filter(s -> s.ordinal() == integer)
             .findFirst()

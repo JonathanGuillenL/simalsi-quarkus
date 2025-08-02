@@ -5,11 +5,19 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import org.lab.simalsi.factura.infrastructure.DetalleFacturaRepository;
 import org.lab.simalsi.factura.models.DetalleFactura;
+import org.lab.simalsi.solicitud.infrastructure.CajaRepository;
 import org.lab.simalsi.solicitud.infrastructure.LaminaRepository;
 import org.lab.simalsi.solicitud.infrastructure.MuestraRepository;
+import org.lab.simalsi.solicitud.infrastructure.SolicitudCGORepository;
+import org.lab.simalsi.solicitud.models.Caja;
 import org.lab.simalsi.solicitud.models.Lamina;
 import org.lab.simalsi.solicitud.models.Muestra;
 import org.lab.simalsi.solicitud.models.SolicitudCGO;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class MuestraService {
@@ -18,10 +26,13 @@ public class MuestraService {
     MuestraRepository muestraRepository;
 
     @Inject
-    DetalleFacturaRepository detalleFacturaRepository;
+    SolicitudCGORepository solicitudCGORepository;
 
     @Inject
     LaminaRepository laminaRepository;
+
+    @Inject
+    private CajaRepository cajaRepository;
 
     @Inject
     MuestraMapper muestraMapper;
@@ -29,35 +40,34 @@ public class MuestraService {
     @Inject
     LaminaMapper laminaMapper;
 
-    public Muestra agregarMuestraASolicitud(AgregarMuestraDto muestraDto) {
+    public Muestra agregarMuestraASolicitud(Long solicitudId, AgregarMuestraDto muestraDto) {
         Muestra muestra = muestraMapper.toModel(muestraDto);
+        Map<Long, List<AgregarLaminaDto>> laminasPorCaja = muestraDto.laminas().stream()
+            .collect(Collectors.groupingBy(AgregarLaminaDto::cajaId));
 
+        List<Lamina> laminaList = laminasPorCaja.keySet().stream().map(cajaId -> {
+            List<Lamina> laminas = laminasPorCaja.get(cajaId).stream()
+                .map(laminaMapper::toModel).toList();
+
+            Caja caja = cajaRepository.findByIdOptional(cajaId)
+                .orElseThrow(() -> new NotFoundException("Caja no encontrada."));
+
+            caja.addLaminas(laminas);
+
+            cajaRepository.persist(caja);
+
+            return laminas;
+        }).flatMap(List::stream).toList();
+
+        muestra.setLaminas(laminaList);
         muestraRepository.persist(muestra);
 
-        DetalleFactura detalleFactura = detalleFacturaRepository.findByIdOptional(muestraDto.solicitudId())
+        SolicitudCGO solicitudCGO = solicitudCGORepository.findByIdOptional(solicitudId)
             .orElseThrow(() -> new NotFoundException("Solcitud no encontrada"));
 
-        if (detalleFactura instanceof SolicitudCGO solicitudCGO) {
-            solicitudCGO.setMuestra(muestra);
-            detalleFacturaRepository.persist(solicitudCGO);
-        } else {
-            throw new NotFoundException("Solicitud no encontrada");
-        }
+        solicitudCGO.setMuestra(muestra);
+        solicitudCGORepository.persist(solicitudCGO);
 
         return muestra;
-    }
-
-    public Lamina agregarLaminaAMuestra(Long muestraId, AgregarLaminaDto laminaDto) {
-        Lamina lamina = laminaMapper.toModel(laminaDto);
-
-        laminaRepository.persist(lamina);
-
-        Muestra muestra = muestraRepository.findByIdOptional(muestraId)
-            .orElseThrow(() -> new NotFoundException("Muestra no encontrada"));
-
-        muestra.agregarLamina(lamina);
-        muestraRepository.persist(muestra);
-
-        return lamina;
     }
 }
