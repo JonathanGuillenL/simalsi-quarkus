@@ -5,6 +5,7 @@ public record CrearClienteNaturalDto(
     String apellidos,
     String cedula,
     String telefono,
+    String direccion,
     String username,
     String email
 ) {

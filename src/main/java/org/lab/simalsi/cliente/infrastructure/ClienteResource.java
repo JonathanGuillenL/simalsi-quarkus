@@ -6,15 +6,13 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.lab.simalsi.cliente.application.ClienteService;
-import org.lab.simalsi.cliente.application.CrearClienteEspontaneoDto;
-import org.lab.simalsi.cliente.application.CrearClinicaAfiliada;
-import org.lab.simalsi.cliente.application.CrearMedicoAfiliadoDto;
+import org.lab.simalsi.cliente.application.CrearClienteDto;
+import org.lab.simalsi.cliente.application.CrearClienteJuridicoDto;
+import org.lab.simalsi.cliente.application.CrearClienteNaturalDto;
 import org.lab.simalsi.cliente.models.Cliente;
-import org.lab.simalsi.cliente.models.ClienteEspontaneo;
-import org.lab.simalsi.cliente.models.ClinicaAfiliada;
-import org.lab.simalsi.cliente.models.MedicoAfiliado;
 import org.lab.simalsi.common.PageDto;
 
 @Path("/cliente")
@@ -29,24 +27,30 @@ public class ClienteResource {
         return clienteService.obtenerListaClientes(page, size);
     }
 
-    @POST
-    @Path("_espontaneo")
-    @Transactional
-    public ClienteEspontaneo store(CrearClienteEspontaneoDto clienteEspontaneoDto) {
-        return clienteService.registrarCliente(clienteEspontaneoDto);
+    @GET
+    @Path("{id}")
+    public Cliente obtenerClientePorId(@RestPath Long id) {
+        return clienteService.obtenerClientePorId(id);
     }
 
     @POST
-    @Path("medico-afiliado")
+    @Path("paciente/{pacienteId}")
     @Transactional
-    public MedicoAfiliado store(CrearMedicoAfiliadoDto medicoAfiliadoDto) {
-        return clienteService.registrarCliente(medicoAfiliadoDto);
+    public Cliente store(@RestPath Long pacienteId, CrearClienteDto cliente) {
+        return clienteService.registrarClientePorPacienteId(pacienteId, cliente);
     }
 
     @POST
-    @Path("/clinica-afiliada")
+    @Path("natural")
     @Transactional
-    public ClinicaAfiliada store(CrearClinicaAfiliada clinicaAfiliadaDto) {
-        return clienteService.registrarCliente(clinicaAfiliadaDto);
+    public Cliente store(CrearClienteNaturalDto clienteNaturalDto) {
+        return clienteService.registrarClienteNatural(clienteNaturalDto);
+    }
+
+    @POST
+    @Path("juridico")
+    @Transactional
+    public Cliente store(CrearClienteJuridicoDto clienteJuridicoDto) {
+        return clienteService.registrarClienteJuridico(clienteJuridicoDto);
     }
 }

@@ -1,28 +1,28 @@
 package org.lab.simalsi.cliente.models;
 
 import jakarta.persistence.*;
+import org.lab.simalsi.persona.models.Persona;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Cliente {
+public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String email;
-    private String telefono;
 
-    @ManyToOne
-    private TipoCliente tipoCliente;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Persona persona;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, String username, String email) {
+    public Cliente(Long id, String username, String email, Persona persona) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.persona = persona;
     }
 
     public Long getId() {
@@ -49,19 +49,11 @@ public abstract class Cliente {
         this.email = email;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public TipoCliente getTipoCliente() {
-        return tipoCliente;
-    }
-
-    public void setTipoCliente(TipoCliente tipoCliente) {
-        this.tipoCliente = tipoCliente;
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
 }

@@ -1,26 +1,27 @@
-package org.lab.simalsi.paciente.models;
+package org.lab.simalsi.medico.models;
 
 import jakarta.persistence.*;
+import org.lab.simalsi.persona.models.Persona;
 import org.lab.simalsi.persona.models.PersonaNatural;
 
-import java.time.LocalDate;
-
 @Entity
-public class Paciente {
+public class MedicoTratante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDate nacimiento;
+    @Column(length = 20, nullable = false)
+    private String codigoSanitario;
 
     @OneToOne(cascade = CascadeType.ALL)
     private PersonaNatural persona;
 
-    public Paciente() {}
+    public MedicoTratante() {
+    }
 
-    public Paciente(Long id, LocalDate nacimiento, PersonaNatural persona) {
+    public MedicoTratante(Long id, String codigoSanitario, PersonaNatural persona) {
         this.id = id;
-        this.nacimiento = nacimiento;
+        this.codigoSanitario = codigoSanitario;
         this.persona = persona;
     }
 
@@ -32,12 +33,12 @@ public class Paciente {
         this.id = id;
     }
 
-    public LocalDate getNacimiento() {
-        return nacimiento;
+    public String getCodigoSanitario() {
+        return codigoSanitario;
     }
 
-    public void setNacimiento(LocalDate nacimiento) {
-        this.nacimiento = nacimiento;
+    public void setCodigoSanitario(String codigoSanitario) {
+        this.codigoSanitario = codigoSanitario;
     }
 
     public PersonaNatural getPersona() {

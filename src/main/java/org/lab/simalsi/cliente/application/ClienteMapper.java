@@ -1,45 +1,50 @@
 package org.lab.simalsi.cliente.application;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import org.lab.simalsi.cliente.models.ClienteEspontaneo;
-import org.lab.simalsi.cliente.models.ClinicaAfiliada;
-import org.lab.simalsi.cliente.models.MedicoAfiliado;
+import org.lab.simalsi.cliente.models.Cliente;
+import org.lab.simalsi.persona.models.PersonaJuridica;
+import org.lab.simalsi.persona.models.PersonaNatural;
 
 @ApplicationScoped
 public class ClienteMapper {
 
-    public ClienteEspontaneo toModel(CrearClienteEspontaneoDto clienteDto) {
-        var cliente = new ClienteEspontaneo();
-        cliente.setNombres(clienteDto.nombres());
-        cliente.setApellidos(clienteDto.apellidos());
-        cliente.setCedula(clienteDto.cedula());
-        cliente.setTelefono(clienteDto.telefono());
+    public Cliente toModel(CrearClienteDto clienteDto) {
+        var cliente = new Cliente();
         cliente.setUsername(clienteDto.username());
         cliente.setEmail(clienteDto.email());
 
         return cliente;
     }
 
-    public MedicoAfiliado toModel(CrearMedicoAfiliadoDto clienteDto) {
-        var cliente = new MedicoAfiliado();
-        cliente.setNombres(clienteDto.nombres());
-        cliente.setApellidos(clienteDto.apellidos());
-        cliente.setCedula(clienteDto.cedula());
-        cliente.setTelefono(clienteDto.telefono());
-        cliente.setCodigoSanitario(clienteDto.codigoSanitario());
+    public Cliente toModel(CrearClienteNaturalDto clienteDto) {
+        var cliente = new Cliente();
         cliente.setUsername(clienteDto.username());
         cliente.setEmail(clienteDto.email());
+
+        var persona = new PersonaNatural();
+        persona.setNombre(clienteDto.nombres());
+        persona.setApellido(clienteDto.apellidos());
+        persona.setNumeroIdentificacion(clienteDto.cedula());
+        persona.setTelefono(clienteDto.telefono());
+        persona.setDireccion(clienteDto.direccion());
+
+        cliente.setPersona(persona);
 
         return cliente;
     }
 
-    public ClinicaAfiliada toModel(CrearClinicaAfiliada clienteDto) {
-        var cliente = new ClinicaAfiliada();
-        cliente.setNombre(clienteDto.nombre());
-        cliente.setTelefono(clienteDto.telefono());
-        cliente.setDireccion(clienteDto.direccion());
+    public Cliente toModel(CrearClienteJuridicoDto clienteDto) {
+        var cliente = new Cliente();
         cliente.setUsername(clienteDto.username());
         cliente.setEmail(clienteDto.email());
+
+        var persona = new PersonaJuridica();
+        persona.setNombre(clienteDto.nombre());
+        persona.setRazonSocial(clienteDto.razoSocial());
+        persona.setTelefono(clienteDto.telefono());
+        persona.setDireccion(clienteDto.direccion());
+
+        cliente.setPersona(persona);
 
         return cliente;
     }

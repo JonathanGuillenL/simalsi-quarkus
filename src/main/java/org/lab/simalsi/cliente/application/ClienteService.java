@@ -4,10 +4,13 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.client.Client;
 import org.lab.simalsi.cliente.infrastructure.ClienteRepository;
-import org.lab.simalsi.cliente.infrastructure.TipoClienteRepository;
 import org.lab.simalsi.cliente.models.*;
 import org.lab.simalsi.common.PageDto;
+import org.lab.simalsi.paciente.infrastructure.PacienteRepository;
+import org.lab.simalsi.paciente.models.Paciente;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ public class ClienteService {
     ClienteRepository clienteRepository;
 
     @Inject
-    TipoClienteRepository tipoClienteRepository;
+    PacienteRepository pacienteRepository;
 
     @Inject
     ClienteMapper clienteMapper;
@@ -31,31 +34,32 @@ public class ClienteService {
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public ClienteEspontaneo registrarCliente(CrearClienteEspontaneoDto clienteDto) {
-        ClienteEspontaneo cliente = clienteMapper.toModel(clienteDto);
+    public Cliente obtenerClientePorId(Long id) {
+        return clienteRepository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Cliente no encontrado."));
+    }
 
-        TipoCliente tipoCliente = tipoClienteRepository.findById(clienteDto.tipoId());
-        cliente.setTipoCliente(tipoCliente);
+    public Cliente registrarClientePorPacienteId(Long pacienteId, CrearClienteDto clienteDto) {
+        Paciente paciente = pacienteRepository.findByIdOptional(pacienteId)
+            .orElseThrow(() -> new NotFoundException("Paciente no encontrado."));
+
+        Cliente cliente = clienteMapper.toModel(clienteDto);
+
+        cliente.setPersona(paciente.getPersona());
+        clienteRepository.persist(cliente);
+
+        return cliente;
+    }
+
+    public Cliente registrarClienteNatural(CrearClienteNaturalDto clienteDto) {
+        Cliente cliente = clienteMapper.toModel(clienteDto);
 
         clienteRepository.persist(cliente);
         return cliente;
     }
 
-    public MedicoAfiliado registrarCliente(CrearMedicoAfiliadoDto clienteDto) {
-        MedicoAfiliado cliente = clienteMapper.toModel(clienteDto);
-
-        TipoCliente tipoCliente = tipoClienteRepository.findById(clienteDto.tipoId());
-        cliente.setTipoCliente(tipoCliente);
-
-        clienteRepository.persist(cliente);
-        return cliente;
-    }
-
-    public ClinicaAfiliada registrarCliente(CrearClinicaAfiliada clienteDto) {
-        ClinicaAfiliada cliente = clienteMapper.toModel(clienteDto);
-
-        TipoCliente tipoCliente = tipoClienteRepository.findById(clienteDto.tipoId());
-        cliente.setTipoCliente(tipoCliente);
+    public Cliente registrarClienteJuridico(CrearClienteJuridicoDto clienteDto) {
+        Cliente cliente = clienteMapper.toModel(clienteDto);
 
         clienteRepository.persist(cliente);
         return cliente;

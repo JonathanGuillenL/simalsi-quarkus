@@ -1,11 +1,11 @@
 package org.lab.simalsi.cliente.application;
 
-public record CrearClinicaAfiliada(
+public record CrearClienteJuridicoDto(
     String nombre,
+    String razoSocial,
     String telefono,
     String direccion,
     String username,
-    String email,
-    Long tipoId
+    String email
 ) {
 }
