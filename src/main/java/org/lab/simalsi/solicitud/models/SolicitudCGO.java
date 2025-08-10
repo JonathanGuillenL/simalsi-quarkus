@@ -8,8 +8,12 @@ import org.lab.simalsi.medico.models.MedicoTratante;
 import org.lab.simalsi.paciente.models.Paciente;
 import org.lab.simalsi.servicio.models.ServicioLaboratorio;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class SolicitudCGO extends DetalleFactura {
+    private LocalDateTime fechaSolicitud;
+
     private String observaciones;
 
     @ManyToOne
@@ -34,12 +38,14 @@ public class SolicitudCGO extends DetalleFactura {
     private SolicitudEstado estado;
 
     public SolicitudCGO() {
+        this.fechaSolicitud = LocalDateTime.now();
     }
 
-    public SolicitudCGO(Long id, Double precio, boolean facturado, String observaciones, Colaborador recepcionista, Cliente cliente,
+    public SolicitudCGO(Long id, Double precio, boolean facturado, LocalDateTime fechaSolicitud, String observaciones, Colaborador recepcionista, Cliente cliente,
                         Paciente paciente, MedicoTratante medicoTratante, ServicioLaboratorio servicioLaboratorio, Muestra muestra,
                         ResultadoCGO resultadoCGO, SolicitudEstado estado) {
         super(id, precio, facturado, servicioLaboratorio);
+        this.fechaSolicitud = fechaSolicitud;
         this.observaciones = observaciones;
         this.recepcionista = recepcionista;
         this.cliente = cliente;
@@ -48,6 +54,14 @@ public class SolicitudCGO extends DetalleFactura {
         this.muestra = muestra;
         this.resultadoCGO = resultadoCGO;
         this.estado = estado;
+    }
+
+    public LocalDateTime getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+
+    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
     }
 
     public String getObservaciones() {

@@ -112,12 +112,12 @@
       ]
     },
     {
-      "username": "jguillen",
+      "username": "recepcionista",
       "enabled": true,
       "emailVerified": true,
-      "firstName": "Jon",
-      "lastName": "Gui",
-      "email": "jguillen@local.dev",
+      "firstName": "recepcionista",
+      "lastName": "recepcionista",
+      "email": "recepcionista@local.dev",
       "credentials": [
         {
           "type": "password",
@@ -127,6 +127,42 @@
       ],
       "realmRoles": [
         "ROLE_RECEPCIONISTA"
+      ]
+    },
+    {
+      "username": "patologo",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "patologo",
+      "lastName": "patologo",
+      "email": "patologo@local.dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "12345678",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_PATOLOGO"
+      ]
+    },
+    {
+      "username": "histotecnologo",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "histotecnologo",
+      "lastName": "histotecnologo",
+      "email": "histotecnologo@local.dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "12345678",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_HISTOTECNOLOGO"
       ]
     }
   ]

@@ -15,7 +15,8 @@ public class ResultadoCGO {
     @ManyToOne
     private Colaborador patologo;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "resultado_id", referencedColumnName = "id")
     private List<ArchivoAdjunto> archivosAdjuntos;
 
     // catalogo de enfermedades
@@ -60,5 +61,9 @@ public class ResultadoCGO {
 
     public void setArchivosAdjuntos(List<ArchivoAdjunto> archivosAdjuntos) {
         this.archivosAdjuntos = archivosAdjuntos;
+    }
+
+    public boolean addArchivoAdjunto(ArchivoAdjunto archivoAdjunto) {
+        return archivosAdjuntos.add(archivoAdjunto);
     }
 }

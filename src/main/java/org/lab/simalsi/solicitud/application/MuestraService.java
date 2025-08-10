@@ -9,10 +9,7 @@ import org.lab.simalsi.solicitud.infrastructure.CajaRepository;
 import org.lab.simalsi.solicitud.infrastructure.LaminaRepository;
 import org.lab.simalsi.solicitud.infrastructure.MuestraRepository;
 import org.lab.simalsi.solicitud.infrastructure.SolicitudCGORepository;
-import org.lab.simalsi.solicitud.models.Caja;
-import org.lab.simalsi.solicitud.models.Lamina;
-import org.lab.simalsi.solicitud.models.Muestra;
-import org.lab.simalsi.solicitud.models.SolicitudCGO;
+import org.lab.simalsi.solicitud.models.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +63,7 @@ public class MuestraService {
             .orElseThrow(() -> new NotFoundException("Solcitud no encontrada"));
 
         solicitudCGO.setMuestra(muestra);
+        solicitudCGO.setEstado(SolicitudEstado.PROCESADO);
         solicitudCGORepository.persist(solicitudCGO);
 
         return muestra;

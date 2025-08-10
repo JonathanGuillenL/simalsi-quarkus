@@ -20,12 +20,13 @@ import org.lab.simalsi.factura.models.DetalleFactura;
 import org.lab.simalsi.solicitud.application.CrearSolicitudCGODto;
 import org.lab.simalsi.solicitud.application.SolicitudService;
 import org.lab.simalsi.solicitud.models.SolicitudCGO;
+import org.lab.simalsi.solicitud.models.SolicitudEstado;
 
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
 
 @Path("/solicitud/cgo")
-@RolesAllowed("ROLE_RECEPCIONISTA")
+@RolesAllowed({"ROLE_RECEPCIONISTA", "ROLE_HISTOTECNOLOGO", "ROLE_PATOLOGO"})
 public class SolicitudCGOResource {
 
     @Inject
@@ -38,9 +39,16 @@ public class SolicitudCGOResource {
     SolicitudService solicitudService;
 
     @GET
-    public PageDto<DetalleFactura> all(@RestQuery @DefaultValue("0") int page,
-                                       @RestQuery @DefaultValue("10") int size) {
-        return solicitudService.obtenerListaSolicitudes(page, size);
+    public PageDto<SolicitudCGO> all(@RestQuery @DefaultValue("0") int page,
+                                     @RestQuery @DefaultValue("10") int size) {
+        if (securityContext.isUserInRole("ROLE_RECEPCIONISTA")) {
+            return solicitudService.obtenerListaSolicitudes(page, size);
+        } else if (securityContext.isUserInRole("ROLE_HISTOTECNOLOGO")) {
+            return solicitudService.obtenerListaSolicitudesPorEstado(page, size, SolicitudEstado.FACTURADO);
+        } else if (securityContext.isUserInRole("ROLE_PATOLOGO")) {
+            return solicitudService.obtenerListaSolicitudesPorEstado(page, size, SolicitudEstado.PROCESADO);
+        }
+        return null;
     }
 
     @GET

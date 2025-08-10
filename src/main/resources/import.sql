@@ -26,15 +26,25 @@ INSERT INTO MedicoTratante(id, codigoSanitario, persona_id) values (100, '10124'
 INSERT INTO Cargo(id, nombre, requiereCodigoSanitario)
 values (100, 'Recepcionista', false);
 INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, telefono, username, email, cargo_id)
-values (100, 'Jon', 'Gui', '001-020202-0002B', '80808080', 'jguillen', 'jguillen@local.dev', 100);
+values (100, 'recepcionista', 'recepcionista', '001-020202-0002B', '80808080', 'recepcionista', 'recepcionista@local.dev', 100);
+
+INSERT INTO Cargo(id, nombre, requiereCodigoSanitario)
+values (101, 'Patologo', false);
+INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, telefono, username, email, cargo_id)
+values (101, 'patologo', 'patologo', '001-020202-0002B', '80808080', 'patologo', 'patologo@local.dev', 100);
+
+INSERT INTO Cargo(id, nombre, requiereCodigoSanitario)
+values (102, 'Histotecnologo', false);
+INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, telefono, username, email, cargo_id)
+values (102, 'histotecnologo', 'histotecnologo', '001-020202-0002B', '80808080', 'histotecnologo', 'histotecnologo@local.dev', 100);
 
 INSERT INTO Descuento(id, descripcion, porcentaje, fechaInicio, fechaFin, anual, automatico)
 values (100, 'Dia de las madres', 10.0, '2025-01-01', '2025-12-31', true, true);
 
 INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (100, 125.0, false, 100);
-INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista_id, cliente_id, paciente_id)
-values (100, 'PRUEBA', 0, 100, 100, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista_id, cliente_id, paciente_id, fechaSolicitud)
+values (100, 'PRUEBA', 0, 100, 100, 100, '2025-07-22');
 
 INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (101, 125.0, false, 100);
-INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista_id, cliente_id, paciente_id)
-values (101, 'PRUEBA', 0, 100, 100, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista_id, cliente_id, paciente_id, fechaSolicitud)
+values (101, 'PRUEBA', 0, 100, 100, 100, '2025-07-04T06:30:05');

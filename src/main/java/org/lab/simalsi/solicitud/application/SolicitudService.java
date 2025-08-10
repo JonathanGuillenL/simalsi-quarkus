@@ -67,9 +67,17 @@ public class SolicitudService {
     @Inject
     SolicitudMapper solicitudMapper;
 
-    public PageDto<DetalleFactura> obtenerListaSolicitudes(int page, int size) {
-        PanacheQuery<DetalleFactura> query = detalleFacturaRepository.findAll();
-        List<DetalleFactura> lista = query.page(Page.of(page, size)).list();
+    public PageDto<SolicitudCGO> obtenerListaSolicitudes(int page, int size) {
+        PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findAll();
+        List<SolicitudCGO> lista = query.page(Page.of(page, size)).list();
+        int totalPages = query.pageCount();
+
+        return new PageDto<>(lista, page, size, totalPages);
+    }
+
+    public PageDto<SolicitudCGO> obtenerListaSolicitudesPorEstado(int page, int size, SolicitudEstado estado) {
+        PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findByEstado(estado);
+        List<SolicitudCGO> lista = query.page(Page.of(page, size)).list();
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
@@ -84,14 +92,8 @@ public class SolicitudService {
     }
 
     public SolicitudCGO obtenerSolicitudPorId(Long id) {
-        DetalleFactura detalleFactura = detalleFacturaRepository.findByIdOptional(id)
+        return solicitudCGORepository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Solicitud no encontrada."));
-
-        if (detalleFactura instanceof SolicitudCGO solicitudCGO) {
-            return solicitudCGO;
-        }
-
-        throw new NotFoundException("Solicitud no encontrada.");
     }
 
     public SolicitudCGO registrarSolicitudCGO(String userId, CrearSolicitudCGODto solicitudCGODto) {
