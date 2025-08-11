@@ -23,4 +23,26 @@ public class MedicoTratanteMapper {
 
         return medicoTratante;
     }
+
+    public MedicoTratanteResponsePageDto toResponsePage(MedicoTratante medicoTratante) {
+        PersonaNatural persona = medicoTratante.getPersona();
+        return new MedicoTratanteResponsePageDto(
+            medicoTratante.getId(),
+            String.format("%s %s", persona.getNombre(), persona.getApellido()),
+            medicoTratante.getCodigoSanitario(),
+            persona.getTelefono()
+        );
+    }
+
+    public MedicoTratanteResponseDto toResponse(MedicoTratante medicoTratante) {
+        PersonaNatural persona = medicoTratante.getPersona();
+        return new MedicoTratanteResponseDto(
+            medicoTratante.getId(),
+            persona.getNombre(),
+            persona.getApellido(),
+            medicoTratante.getCodigoSanitario(),
+            persona.getTelefono(),
+            persona.getDireccion()
+        );
+    }
 }

@@ -1,11 +1,14 @@
 package org.lab.simalsi.medico.application;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 public record CrearMedicoTratante(
-    String nombres,
-    String apellidos,
+    @NotBlank(message = "El campo nombre es requerido.") String nombres,
+    @NotBlank(message = "El campo apellido es requerido.") String apellidos,
     String numeroIdentificacion,
-    String codigoSanitario,
-    String telefono,
+    @NotBlank(message = "El campo código sanitario es requerido.") String codigoSanitario,
+    @Pattern(regexp = "\\d{8}", message = "Debe contener exactamente 8 dígitos numéricos") String telefono,
     String direccion
 ) {
 }
