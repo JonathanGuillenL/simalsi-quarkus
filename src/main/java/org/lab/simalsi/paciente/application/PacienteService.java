@@ -11,6 +11,7 @@ import org.lab.simalsi.paciente.infrastructure.PacienteRepository;
 import org.lab.simalsi.paciente.models.Paciente;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class PacienteService {
@@ -21,16 +22,20 @@ public class PacienteService {
     @Inject
     PacienteMapper pacienteMapper;
 
-    public PageDto<Paciente> obtenerListaPacientes(int page, int size) {
-        PanacheQuery<Paciente> query = pacienteRepository.findAll();
-        List<Paciente> lista = query.page(Page.of(page, size)).list();
+    public PageDto<PacienteResponsePageDto> obtenerListaPacientes(int page, int size, PacienteQueryDto pacienteQueryDto) {
+        PanacheQuery<Paciente> query = pacienteRepository.findByQueryDto(pacienteQueryDto);
+        List<PacienteResponsePageDto> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(pacienteMapper::toResponsePage)
+            .collect(Collectors.toList());
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public Paciente obtenerPacientePorId(Long id) {
+    public PacienteResponseDto obtenerPacientePorId(Long id) {
         return pacienteRepository.findByIdOptional(id)
+            .map(pacienteMapper::toResponse)
             .orElseThrow(() -> new NotFoundException("Paciente no encontrado"));
     }
 
