@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import org.lab.simalsi.common.PageDto;
 import org.lab.simalsi.factura.infrastructure.MetodoPagoRepository;
 import org.lab.simalsi.factura.models.MetodoPago;
@@ -26,6 +27,11 @@ public class MetodoPagoService {
 
     public List<MetodoPago> obtenerListMetodoPago() {
         return metodoPagoRepository.findAll().list();
+    }
+
+    public MetodoPago obtenerMetodoPagoPorId(Long id) {
+        return metodoPagoRepository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Metodo de pago no encontrado."));
     }
 
     public MetodoPago registrarMetodoPago(CrearMetodoPagoDto metodoPagoDto) {

@@ -1,6 +1,8 @@
 package org.lab.simalsi.factura.infrastructure;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -31,7 +33,8 @@ public class DescuentoResource {
     }
 
     @POST
-    public Descuento store(CrearDescuentoDto descuentoDto) {
+    @Transactional
+    public Descuento store(@Valid CrearDescuentoDto descuentoDto) {
         return descuentoService.registrarDescuento(descuentoDto);
     }
 }

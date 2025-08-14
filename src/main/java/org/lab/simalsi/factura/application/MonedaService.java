@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import org.lab.simalsi.common.PageDto;
 import org.lab.simalsi.factura.infrastructure.MonedaRepository;
 import org.lab.simalsi.factura.models.Moneda;
@@ -36,5 +37,10 @@ public class MonedaService {
 
         monedaRepository.persist(moneda);
         return moneda;
+    }
+
+    public Moneda obtenerMonedaPorId(Long id) {
+        return monedaRepository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Moneda no encontrada."));
     }
 }

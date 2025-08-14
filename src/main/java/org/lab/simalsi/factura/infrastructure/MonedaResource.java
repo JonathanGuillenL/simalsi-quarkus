@@ -6,6 +6,7 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.lab.simalsi.common.PageDto;
 import org.lab.simalsi.factura.application.CrearMonedaDto;
@@ -30,6 +31,12 @@ public class MonedaResource {
     @Path("list")
     public List<Moneda> list() {
         return monedaService.obtenerListMonedas();
+    }
+
+    @GET
+    @Path("{id}")
+    public Moneda show(@RestPath Long id) {
+        return monedaService.obtenerMonedaPorId(id);
     }
 
     @POST

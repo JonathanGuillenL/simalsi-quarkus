@@ -6,6 +6,7 @@ import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.lab.simalsi.common.PageDto;
 import org.lab.simalsi.factura.application.CrearMetodoPagoDto;
@@ -30,6 +31,12 @@ public class MetodoPagoResource {
     @Path("list")
     public List<MetodoPago> list() {
         return metodoPagoService.obtenerListMetodoPago();
+    }
+
+    @GET
+    @Path("{id}")
+    public MetodoPago show(@RestPath Long id) {
+        return metodoPagoService.obtenerMetodoPagoPorId(id);
     }
 
     @POST
