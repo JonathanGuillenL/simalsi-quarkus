@@ -13,14 +13,17 @@ public class Cargo {
 
     private String nombre;
 
+    private String codigo;
+
     private boolean requiereCodigoSanitario;
 
     public Cargo() {
     }
 
-    public Cargo(Long id, String nombre, boolean requiereCodigoSanitario) {
+    public Cargo(Long id, String nombre, String codigo, boolean requiereCodigoSanitario) {
         this.id = id;
         this.nombre = nombre;
+        this.codigo = codigo;
         this.requiereCodigoSanitario = requiereCodigoSanitario;
     }
 
@@ -38,6 +41,14 @@ public class Cargo {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public boolean isRequiereCodigoSanitario() {

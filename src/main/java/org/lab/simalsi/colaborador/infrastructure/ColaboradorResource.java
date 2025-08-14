@@ -1,6 +1,8 @@
 package org.lab.simalsi.colaborador.infrastructure;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -24,7 +26,8 @@ public class ColaboradorResource {
     }
 
     @POST
-    public Colaborador store(CrearColaboradorDto colaboradorDto) {
+    @Transactional
+    public Colaborador store(@Valid CrearColaboradorDto colaboradorDto) {
         return colaboradorService.registrarColaborador(colaboradorDto);
     }
 }

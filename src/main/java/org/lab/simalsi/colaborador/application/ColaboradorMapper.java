@@ -12,7 +12,6 @@ public class ColaboradorMapper {
         colaborador.setApellidos(colaboradorDto.apellidos());
         colaborador.setNumeroIdentificacion(colaboradorDto.numeroIdentificacion());
         colaborador.setTelefono(colaboradorDto.telefono());
-        colaborador.setUsername(colaboradorDto.username());
         colaborador.setEmail(colaboradorDto.email());
 
         return colaborador;
