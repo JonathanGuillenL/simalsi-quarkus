@@ -1,5 +1,7 @@
 package org.lab.simalsi.cliente.application;
 
+import org.lab.simalsi.cliente.models.TipoCliente;
+
 public record ClienteJuridicoResponseDto(
     Long id,
     String nombre,
@@ -8,6 +10,7 @@ public record ClienteJuridicoResponseDto(
     String direccion,
     String email,
     String usuario,
-    String ruc
+    String ruc,
+    TipoCliente tipoCliente
 ) {
 }

@@ -1,6 +1,17 @@
 {
-  "realm": "mi-realm-dev",
+  "realm": "SIMALSI",
   "enabled": true,
+  "bruteForceProtected": true,
+  "smtpServer": {
+    "host": "live.smtp.mailtrap.io",
+    "port": "587",
+    "from": "no-reply@simalsi.com",
+    "fromDisplayName": "SIMALSI",
+    "starttls": "true",
+    "auth": "true",
+    "user": "api",
+    "password": "${KC_EMAIL_PASSWORD}"
+  },
   "clients": [
     {
       "clientId": "frontend-spa",
@@ -19,9 +30,11 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
+      "serviceAccountsEnabled": true,
       "attributes": {
         "pkce.code.challenge.method": "S256",
+        "refresh.token.lifespan": "86400",
+        "rotate.refresh.tokens": "true",
         "post.logout.redirect.uris": "+",
         "access.token.lifespan": "300"
       },
@@ -49,7 +62,7 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
+      "serviceAccountsEnabled": true,
       "publicClient": false,
       "attributes": {
         "access.token.lifespan": "300",
@@ -109,6 +122,24 @@
       ],
       "realmRoles": [
         "admin"
+      ]
+    },
+    {
+      "username": "jguillenl",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Jonathan Alexander",
+      "lastName": "Guillén Lainez",
+      "email": "jguillenl@gmail.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "12345678",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ROLE_CLIENTE"
       ]
     },
     {

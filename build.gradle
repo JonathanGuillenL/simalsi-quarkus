@@ -9,6 +9,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.quarkus:quarkus-smallrye-graphql'
+    implementation 'io.quarkus:quarkus-redis-cache'
     implementation 'io.quarkus:quarkus-keycloak-admin-rest-client'
     implementation 'io.quarkiverse.amazonservices:quarkus-amazon-s3'
     implementation 'software.amazon.awssdk:url-connection-client'
