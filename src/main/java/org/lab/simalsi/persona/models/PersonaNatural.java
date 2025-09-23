@@ -1,6 +1,8 @@
 package org.lab.simalsi.persona.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.lab.simalsi.cliente.models.Cliente;
 
 @Entity
 public class PersonaNatural extends Persona {
@@ -13,6 +15,10 @@ public class PersonaNatural extends Persona {
 
     @Column(length = 50)
     private String numeroIdentificacion;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "persona")
+    private Cliente cliente;
 
     public PersonaNatural() {
     }
@@ -45,5 +51,18 @@ public class PersonaNatural extends Persona {
 
     public void setNumeroIdentificacion(String numeroIdentificacion) {
         this.numeroIdentificacion = numeroIdentificacion;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    @Override
+    public String getFullname() {
+        return String.format("%s %s", getNombre(), getApellido());
     }
 }

@@ -2,15 +2,21 @@ package org.lab.simalsi.cliente.infrastructure;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.lab.simalsi.cliente.application.ClienteQueryDto;
 import org.lab.simalsi.cliente.models.Cliente;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @ApplicationScoped
 public class ClienteRepository implements PanacheRepository<Cliente> {
+
+    public Optional<Cliente> findByUsername(String username) {
+        return find("username", username).stream().findFirst();
+    }
 
     public boolean existsByEmail(String email) {
         return find("email", email).firstResultOptional().isPresent();
@@ -32,15 +38,27 @@ public class ClienteRepository implements PanacheRepository<Cliente> {
             query.append(" and persona.telefono = :telefono");
             params.put("telefono", clienteQueryDto.telefono);
         }
-        if (clienteQueryDto.usuario != null) {
-            query.append(" and username = :username");
-            params.put("username", clienteQueryDto.usuario);
+        if (clienteQueryDto.email != null) {
+            query.append(" and email like :email");
+            params.put("email", "%" + clienteQueryDto.email + "%");
+        }
+        if (clienteQueryDto.tipoCliente != null) {
+            query.append(" and tipoCliente = :tipoCliente");
+            params.put("tipoCliente", clienteQueryDto.tipoCliente);
+        }
+        if (clienteQueryDto.estado != null) {
+            String q = switch (clienteQueryDto.estado) {
+                case INACTIVO -> " and deletedAt is not null";
+                case ACTIVO -> " and deletedAt is null";
+            };
+
+            query.append(q);
         }
 
         if (!params.isEmpty()) {
-            return find(query.toString(), params);
+            return find(query.toString(), Sort.ascending("id"), params);
         }
 
-        return findAll();
+        return find(query.toString(), Sort.ascending("id"));
     }
 }

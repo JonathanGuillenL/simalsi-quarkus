@@ -18,6 +18,7 @@ public class PacienteMapper {
         persona.setNombre(pacienteDto.nombres());
         persona.setApellido(pacienteDto.apellidos());
         persona.setTelefono(pacienteDto.telefono());
+        persona.setDireccion(pacienteDto.direccion());
         paciente.setPersona(persona);
         paciente.setSexo(pacienteDto.sexo());
 
@@ -32,7 +33,9 @@ public class PacienteMapper {
             StringUtils.capitalize(paciente.getSexo().name()),
             paciente.getEdad(),
             paciente.getNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-            persona.getTelefono()
+            persona.getTelefono(),
+            paciente.getCreatedAt(),
+            paciente.getDeletedAt()
         );
     }
 
@@ -46,7 +49,9 @@ public class PacienteMapper {
             paciente.getNacimiento(),
             paciente.getSexo(),
             persona.getTelefono(),
-            persona.getDireccion()
+            persona.getDireccion(),
+            paciente.getCreatedAt(),
+            paciente.getDeletedAt()
         );
     }
 }

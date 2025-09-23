@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class ArchivoAdjunto {
     @Id
@@ -15,16 +17,19 @@ public class ArchivoAdjunto {
 
     private String descripcion;
 
-    private boolean activo;
+    private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
 
     public ArchivoAdjunto() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public ArchivoAdjunto(Long id, String ubicacion, String descripcion, boolean activo) {
+    public ArchivoAdjunto(Long id, String ubicacion, String descripcion, LocalDateTime createdAt) {
         this.id = id;
         this.ubicacion = ubicacion;
         this.descripcion = descripcion;
-        this.activo = activo;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -51,11 +56,19 @@ public class ArchivoAdjunto {
         this.descripcion = descripcion;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setActivo(boolean activo) {
-        this.activo = activo;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

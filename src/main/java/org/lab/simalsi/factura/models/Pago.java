@@ -2,6 +2,9 @@ package org.lab.simalsi.factura.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,11 +15,11 @@ public class Pago {
 
     private LocalDateTime fechaPago;
 
+    @Column(nullable = false, scale = 2)
     private Double monto;
 
+    @Column(nullable = false, scale = 2)
     private Double tipoCambio;
-
-    private Double cambio;
 
     private String observaciones;
 
@@ -30,9 +33,10 @@ public class Pago {
     @JoinColumn(name = "moneda_id", referencedColumnName = "id")
     private Moneda moneda;
 
+    private LocalDateTime deletedAt;
+
     public Pago() {
         this.tipoCambio = null;
-        this.cambio = 0D;
         this.fechaPago = LocalDateTime.now();
     }
 
@@ -92,6 +96,14 @@ public class Pago {
         this.metodoPago = metodoPago;
     }
 
+    public Double getTipoCambio() {
+        return tipoCambio;
+    }
+
+    public void setTipoCambio(Double tipoCambio) {
+        this.tipoCambio = tipoCambio;
+    }
+
     public Moneda getMoneda() {
         return moneda;
     }
@@ -102,15 +114,17 @@ public class Pago {
         this.tipoCambio = this.moneda.getTipoCambio();
     }
 
-    public Double getCambio() {
-        return cambio;
-    }
-
-    public void setCambio(Double cambio) {
-        this.cambio = cambio;
-    }
-
     public Double calcularMontoCambio() {
-        return monto * tipoCambio;
+        return new BigDecimal(monto * tipoCambio)
+            .setScale(2, RoundingMode.HALF_UP)
+            .doubleValue();
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void anularPago() {
+        deletedAt = LocalDateTime.now();
     }
 }

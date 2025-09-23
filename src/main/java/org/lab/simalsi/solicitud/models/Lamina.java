@@ -1,9 +1,6 @@
 package org.lab.simalsi.solicitud.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Lamina {
@@ -14,6 +11,10 @@ public class Lamina {
     private Integer fila;
 
     private Integer columna;
+
+    @ManyToOne
+    @JoinColumn(name = "caja_id")
+    private Caja caja;
 
     public Lamina() {
     }
@@ -46,5 +47,13 @@ public class Lamina {
 
     public void setColumna(Integer columna) {
         this.columna = columna;
+    }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
     }
 }

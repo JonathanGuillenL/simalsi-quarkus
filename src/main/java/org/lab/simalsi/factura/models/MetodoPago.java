@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class MetodoPago {
     @Id
@@ -13,7 +15,20 @@ public class MetodoPago {
 
     private String descripcion;
 
-    public MetodoPago() {}
+    private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
+
+    public MetodoPago() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public MetodoPago(Long id, String descripcion, LocalDateTime createdAt, LocalDateTime deletedAt) {
+        this.id = id;
+        this.descripcion = descripcion;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
+    }
 
     public MetodoPago(String descripcion) {
         this.descripcion = descripcion;
@@ -33,5 +48,21 @@ public class MetodoPago {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

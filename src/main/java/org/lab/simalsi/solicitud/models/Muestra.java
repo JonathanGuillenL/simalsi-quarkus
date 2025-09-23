@@ -23,8 +23,7 @@ public class Muestra {
 
     private String descripcionMacroscopica;
 
-    @ManyToOne
-    private Colaborador histotecnologo;
+    private String histotecnologo;
 
     @OneToMany
     private List<Lamina> laminas;
@@ -32,7 +31,7 @@ public class Muestra {
     public Muestra() {
     }
 
-    public Muestra(Long id, LocalDate fechaIngreso, LocalDate fechaProcesamiento, Integer numeroDeCortes, Double pesoMuestra, String descripcionMacroscopica, Colaborador histotecnologo, List<Lamina> laminas) {
+    public Muestra(Long id, LocalDate fechaIngreso, LocalDate fechaProcesamiento, Integer numeroDeCortes, Double pesoMuestra, String descripcionMacroscopica, String histotecnologo, List<Lamina> laminas) {
         this.id = id;
         this.fechaIngreso = fechaIngreso;
         this.fechaProcesamiento = fechaProcesamiento;
@@ -91,11 +90,11 @@ public class Muestra {
         this.descripcionMacroscopica = descripcionMacroscopica;
     }
 
-    public Colaborador getHistotecnologo() {
+    public String getHistotecnologo() {
         return histotecnologo;
     }
 
-    public void setHistotecnologo(Colaborador histotecnologo) {
+    public void setHistotecnologo(String histotecnologo) {
         this.histotecnologo = histotecnologo;
     }
 

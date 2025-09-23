@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Caja {
@@ -15,8 +16,7 @@ public class Caja {
 
     private Integer numeroFilas;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "caja_id", referencedColumnName = "id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "caja")
     private List<Lamina> laminas;
 
     public Caja() {
@@ -62,11 +62,11 @@ public class Caja {
         this.laminas = laminas;
     }
 
-    public boolean addLamina(Lamina lamina) {
-        return laminas.add(lamina);
-    }
-
-    public boolean addLaminas(List<Lamina> laminas) {
-        return this.laminas.addAll(laminas);
+    public boolean isDisponible(Integer fila, Integer columna) {
+        if (laminas != null) {
+            return laminas.stream().noneMatch(lamina -> Objects.equals(lamina.getFila(), fila) &&
+                Objects.equals(lamina.getColumna(), columna));
+        }
+        return false;
     }
 }

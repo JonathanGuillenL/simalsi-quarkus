@@ -5,6 +5,47 @@ INSERT INTO ServicioLaboratorio(id, descripcion, precio, procedimiento_id) value
 INSERT INTO Moneda(id, descripcion, tipoCambio, signoMonetario) values (100, 'Córdoba', 1.0, 'C$');
 INSERT INTO MetodoPago(id, descripcion) values (100, 'Contado');
 
+-- Departamento Managua
+INSERT INTO Departamento(id, descripcion) VALUES (100, 'Managua');
+
+-- Municipios de Managua
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1001, 'Ciudad Sandino', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1002, 'El Crucero', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (100, 'Managua', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1004, 'Mateare', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1005, 'San Francisco Libre', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1006, 'San Rafael del Sur', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1007, 'Ticuantepe', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1008, 'Tipitapa', 100);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1009, 'Villa El Carmen', 100);
+
+-- Departamento Masaya
+INSERT INTO Departamento(id, descripcion) VALUES (101, 'Masaya');
+
+-- Municipios de Masaya
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1011, 'Catarina', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1012, 'La Concepción', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1013, 'Masatepe', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1014, 'Masaya', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1015, 'Nandasmo', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1016, 'Nindirí', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1017, 'Niquinohomo', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1018, 'San Juan de Oriente', 101);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1019, 'Tisma', 101);
+
+-- Departamento Carazo
+INSERT INTO Departamento(id, descripcion) VALUES (102, 'Carazo');
+
+-- Municipios de Carazo
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1021, 'Diriamba', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1022, 'Dolores', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1023, 'El Rosario', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1024, 'Jinotepe', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1025, 'La Conquista', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1026, 'La Paz de Oriente', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1027, 'San Marcos', 102);
+INSERT INTO Municipio(id, descripcion, departamento_id) VALUES (1028, 'Santa Teresa', 102);
+
 INSERT INTO Caja(id, numeroFilas, numeroColumnas) values (100, 15, 10);
 INSERT INTO Caja(id, numeroFilas, numeroColumnas) values (101, 5, 5);
 INSERT INTO Lamina(id, fila, columna, caja_id) values (100, 1, 1, 100);
@@ -29,26 +70,22 @@ INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, telefono, 
 values (100, 'Mariela', 'López García', '401-020290-0120X', '84111124', 'recepcionista', 'recepcionista@local.dev', 100);
 
 INSERT INTO Cargo(id, nombre, codigo, requiereCodigoSanitario)
-values (101, 'Patólogo', 'PATO', false);
-INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, telefono, username, email, cargo_id)
-values (101, 'Nubia Leticia', 'López García', '401-020267-0001X', '57408008', 'patologo', 'patologo@local.dev', 101);
+values (101, 'Patólogo', 'PATO', true);
+INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, codigoSanitario, telefono, username, email, cargo_id)
+values (101, 'Nubia Leticia', 'López García', '401-020267-0001X', '13654', '57408008', 'patologo', 'patologo@local.dev', 101);
 
 INSERT INTO Cargo(id, nombre, codigo, requiereCodigoSanitario)
-values (102, 'Histotecnólogo', 'HIST', false);
-INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, telefono, username, email, cargo_id)
-values (102, 'Mario Alberto', 'Sánchez Torrez', '005-201265-0002X', '58298384', 'histotecnologo', 'histotecnologo@local.dev', 102);
+values (102, 'Histotecnólogo', 'HIST', true);
+INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, codigoSanitario, telefono, username, email, cargo_id)
+values (102, 'Mario Alberto', 'Sánchez Torrez', '005-201265-0002X', '13123', '58298384', 'histotecnologo', 'histotecnologo@local.dev', 102);
+
+INSERT INTO Cargo(id, nombre, codigo, requiereCodigoSanitario)
+values (103, 'ADMIN', 'ADMIN', true);
+INSERT INTO Colaborador(id, nombres, apellidos, numeroIdentificacion, codigoSanitario, telefono, username, email, cargo_id)
+values (103, 'Leticia', 'López García', '401-020290-0121X', '65781', '84541246', 'admin', 'admin@local.dev', 103);
 
 INSERT INTO Descuento(id, descripcion, porcentaje, fechaInicio, fechaFin, anual, automatico)
 values (100, 'Dia de las madres', 10.0, '2025-01-01', '2025-12-31', true, true);
-
-INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (100, 125.0, false, 100);
-INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista_id, cliente_id, paciente_id, medicoTratante_id, fechaSolicitud, fechaTomaMuestra)
-values (100, 'PRUEBA', 0, 100, 100, 100, 100, '2025-07-22', '2025-07-21T06:20:00');
-
-INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (101, 125.0, false, 100);
-INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista_id, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
-values (101, 'PRUEBA', 0, 100, 100, 100, '2025-07-04T06:30:05', '2025-07-04T06:20:00');
-
 
 -- Paciente 1
 INSERT INTO Persona(id, nombre, telefono, direccion)
@@ -214,80 +251,80 @@ VALUES (309, '20110', 310);
 -- Cliente Jurídico 1
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (501, 'Clínica Vida Sana', '22531001', 'Barrio Monseñor Lezcano');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (501, 'J031-010125-0001A', 'Clínica Vida Sana S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (501, 'J031-010125-0001A', 'Clínica Vida Sana S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (500, 3, 501, 'vidasana001@example.com', 'vidasana4821');
 
 -- Cliente Jurídico 2
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (502, 'Hospital San Rafael', '22531002', 'Colonia Centroamérica');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (502, 'J031-020225-0002B', 'Hospital San Rafael S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (502, 'J031-020225-0002B', 'Hospital San Rafael S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (501, 3, 502, 'sanrafael002@example.com', 'sanrafael9365');
 
 -- Cliente Jurídico 3
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (503, 'Laboratorios BioSalud', '22531003', 'Carretera Masaya, km 6');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (503, 'J031-030325-0003C', 'Laboratorios BioSalud S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (503, 'J031-030325-0003C', 'Laboratorios BioSalud S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (502, 3, 503, 'biosalud003@example.com', 'biosalud7230');
 
 -- Cliente Jurídico 4
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (504, 'Centro Médico Los Ángeles', '22531004', 'Altamira, Managua');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (504, 'J031-040425-0004D', 'Centro Médico Los Ángeles S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (504, 'J031-040425-0004D', 'Centro Médico Los Ángeles S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (503, 3, 504, 'losangeles004@example.com', 'losangeles5172');
 
 -- Cliente Jurídico 5
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (505, 'Hospital Vida Plena', '22531005', 'Distrito II, Managua');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (505, 'J031-050525-0005E', 'Hospital Vida Plena S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (505, 'J031-050525-0005E', 'Hospital Vida Plena S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (504, 3, 505, 'vidaplena005@example.com', 'vidaplena2089');
 
 -- Cliente Jurídico 6
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (506, 'Clínica Especializada San José', '22531006', 'Carretera Norte, km 8');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (506, 'J031-060625-0006F', 'Clínica Especializada San José S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (506, 'J031-060625-0006F', 'Clínica Especializada San José S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (505, 3, 506, 'sanjose006@example.com', 'sanjose6734');
 
 -- Cliente Jurídico 7
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (507, 'Hospital Metropolitano Salud Total', '22531007', 'Distrito IV, Managua');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (507, 'J031-070725-0007G', 'Hospital Metropolitano Salud Total S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (507, 'J031-070725-0007G', 'Hospital Metropolitano Salud Total S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (506, 3, 507, 'saludtotal007@example.com', 'saludtotal9542');
 
 -- Cliente Jurídico 8
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (508, 'Clínica Integral Esperanza', '22531008', 'Jinotepe, Carazo');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (508, 'J031-080825-0008H', 'Clínica Integral Esperanza S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (508, 'J031-080825-0008H', 'Clínica Integral Esperanza S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (507, 3, 508, 'esperanza008@example.com', 'esperanza4210');
 
 -- Cliente Jurídico 9
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (509, 'Centro de Diagnóstico Avanzado', '22531009', 'León, Nicaragua');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (509, 'J031-090925-0009J', 'Centro de Diagnóstico Avanzado S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (509, 'J031-090925-0009J', 'Centro de Diagnóstico Avanzado S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (508, 3, 509, 'diagnostico009@example.com', 'diagnostico8361');
 
 -- Cliente Jurídico 10
 INSERT INTO Persona(id, nombre, telefono, direccion)
 VALUES (510, 'Hospital La Merced', '22531010', 'Granada, Nicaragua');
-INSERT INTO PersonaJuridica(id, RUC, razonSocial)
-VALUES (510, 'J031-101025-0010K', 'Hospital La Merced S.A.');
+INSERT INTO PersonaJuridica(id, RUC, razonSocial, municipio_id)
+VALUES (510, 'J031-101025-0010K', 'Hospital La Merced S.A.', 100);
 INSERT INTO Cliente(id, tipoCliente, persona_id, email, username)
 VALUES (509, 3, 510, 'lamerced010@example.com', 'lamerced1927');
 
@@ -507,11 +544,11 @@ SELECT id, 'Histerectomía (pieza cervical incluida)' FROM regionanatomica WHERE
 
 -- ServicioLaboratorio 1
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (201, 45.00, 1, 'Biopsia endoscópica gástrica express');
+VALUES (201, 45.00, 1, 'Biopsia endoscópica gástrica');
 
 -- ServicioLaboratorio 2
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (202, 60.00, 2, 'Resección endoscópica de lesión gástrica premium');
+VALUES (202, 60.00, 2, 'Resección endoscópica de lesión gástrica');
 
 -- ServicioLaboratorio 3
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
@@ -523,7 +560,7 @@ VALUES (204, 50.00, 6, 'Hemicolectomía diagnóstica');
 
 -- ServicioLaboratorio 5
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (205, 80.00, 9, 'Biopsia rectal rápida');
+VALUES (205, 80.00, 9, 'Biopsia rectal');
 
 -- ServicioLaboratorio 6
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
@@ -531,11 +568,11 @@ VALUES (206, 95.00, 10, 'Resección transanal integral');
 
 -- ServicioLaboratorio 7
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (207, 65.00, 13, 'Biopsia endoscópica esofágica express');
+VALUES (207, 65.00, 13, 'Biopsia endoscópica esofágica');
 
 -- ServicioLaboratorio 8
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (208, 85.00, 14, 'Mucosectomía esofágica premium');
+VALUES (208, 85.00, 14, 'Mucosectomía esofágica');
 
 -- ServicioLaboratorio 9
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
@@ -547,15 +584,15 @@ VALUES (210, 150.00, 18, 'Lobectomía hepática diagnóstica');
 
 -- ServicioLaboratorio 11
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (211, 40.00, 21, 'Colecistectomía parcial con análisis histológico');
+VALUES (211, 40.00, 21, 'Colecistectomía parcial');
 
 -- ServicioLaboratorio 12
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (212, 55.00, 22, 'Biopsia de pared vesicular express');
+VALUES (212, 55.00, 22, 'Biopsia de pared vesicular');
 
 -- ServicioLaboratorio 13
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (213, 110.00, 25, 'Biopsia pulmonar transtorácica con reporte rápido');
+VALUES (213, 110.00, 25, 'Biopsia pulmonar transtorácica');
 
 -- ServicioLaboratorio 14
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
@@ -563,25 +600,53 @@ VALUES (2014, 130.00, 26, 'Lobectomía pulmonar diagnóstica');
 
 -- ServicioLaboratorio 15
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (215, 50.00, 29, 'Biopsia por core de mama premium');
+VALUES (215, 50.00, 29, 'Biopsia por core de mama');
 
 -- ServicioLaboratorio 16
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (216, 70.00, 30, 'Cuadrantectomía con análisis histopatológico');
-
--- ServicioLaboratorio 17
-INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (217, 35.00, 33, 'Papanicolaou con entrega rápida');
-
--- ServicioLaboratorio 18
-INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (218, 55.00, 34, 'Biopsia cervical dirigida con informe digital');
+VALUES (216, 70.00, 30, 'Cuadrantectomía');
 
 -- ServicioLaboratorio 19
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (219, 90.00, 35, 'Conización (LEEP) premium');
+VALUES (219, 90.00, 35, 'Conización (LEEP)');
 
 -- ServicioLaboratorio 20
 INSERT INTO ServicioLaboratorio(id, precio, procedimiento_id, descripcion)
-VALUES (220, 120.00, 36, 'Histerectomía (pieza cervical incluida) con análisis completo');
+VALUES (220, 120.00, 36, 'Histerectomía (pieza cervical incluida)');
 
+INSERT INTO CodigoEnfermedades(id, codigo, descripcion)
+VALUES (100, 'CIE1', 'Enfermedad1');
+
+INSERT INTO CodigoEnfermedades(id, codigo, descripcion)
+VALUES (101, 'CIE2', 'Enfermedad2');
+
+INSERT INTO CodigoEnfermedades(id, codigo, descripcion)
+VALUES (102, 'CIE3', 'Enfermedad3');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (100, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, medicoTratante_id, fechaSolicitud, fechaTomaMuestra)
+values (100, 'PRUEBA', 0, 'recepcionista', 100, 100, 100, '2025-07-22', '2025-07-21T06:20:00');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (101, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
+values (101, 'PRUEBA', 0, 'recepcionista', 100, 100, '2025-07-04T06:30:05', '2025-07-04T06:20:00');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (102, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
+values (102, 'PRUEBA', 0, 'recepcionista', 500, 200, '2025-06-04T06:30:05', '2025-07-04T06:20:00');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (103, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
+values (103, 'PRUEBA', 0, 'recepcionista', 500, 200, '2025-05-04T06:30:05', '2025-07-04T06:20:00');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (104, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
+values (104, 'PRUEBA', 0, 'recepcionista', 500, 200, '2025-05-04T06:30:05', '2025-07-04T06:20:00');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (105, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
+values (105, 'PRUEBA', 0, 'recepcionista', 500, 200, '2025-04-04T06:30:05', '2025-07-04T06:20:00');
+
+INSERT INTO DetalleFactura(id, precio, facturado, servicioLaboratorio_id) values (106, 125.0, false, 100);
+INSERT INTO SolicitudCGO(id, observaciones, estado, recepcionista, cliente_id, paciente_id, fechaSolicitud, fechaTomaMuestra)
+values (106, 'PRUEBA', 0, 'recepcionista', 500, 200, '2025-03-04T06:30:05', '2025-07-04T06:20:00');

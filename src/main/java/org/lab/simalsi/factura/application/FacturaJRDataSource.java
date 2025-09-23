@@ -47,7 +47,7 @@ public class FacturaJRDataSource implements JRDataSource {
                 PersonaNatural persona = paciente.getPersona();
                 return persona.getNombre() + " " + persona.getApellido();
             } else if ("servicio".equals(fieldName)) {
-                return "asdf";
+                return detalleFactura.getServicioLaboratorio().getDescripcion();
             }
         }
         return null;

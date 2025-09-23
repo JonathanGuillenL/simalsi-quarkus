@@ -16,8 +16,7 @@ public class SolicitudCGO extends DetalleFactura {
 
     private String observaciones;
 
-    @ManyToOne
-    private Colaborador recepcionista;
+    private String recepcionista;
 
     @ManyToOne
     private Cliente cliente;
@@ -28,21 +27,26 @@ public class SolicitudCGO extends DetalleFactura {
     @ManyToOne
     private MedicoTratante medicoTratante;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
+    private LocalDateTime fechaTomaMuestra;
+
+    @OneToOne(fetch = FetchType.EAGER)
     private Muestra muestra;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private ResultadoCGO resultadoCGO;
 
     @Convert(converter = SolicitudEstadoConverter.class)
     private SolicitudEstado estado;
 
+    private LocalDateTime deletedAt;
+
     public SolicitudCGO() {
         this.fechaSolicitud = LocalDateTime.now();
     }
 
-    public SolicitudCGO(Long id, Double precio, boolean facturado, LocalDateTime fechaSolicitud, String observaciones, Colaborador recepcionista, Cliente cliente,
-                        Paciente paciente, MedicoTratante medicoTratante, ServicioLaboratorio servicioLaboratorio, Muestra muestra,
+    public SolicitudCGO(Long id, Double precio, boolean facturado, LocalDateTime fechaSolicitud, String observaciones, String recepcionista, Cliente cliente,
+                        Paciente paciente, MedicoTratante medicoTratante, LocalDateTime fechaTomaMuestra, ServicioLaboratorio servicioLaboratorio, Muestra muestra,
                         ResultadoCGO resultadoCGO, SolicitudEstado estado) {
         super(id, precio, facturado, servicioLaboratorio);
         this.fechaSolicitud = fechaSolicitud;
@@ -51,6 +55,7 @@ public class SolicitudCGO extends DetalleFactura {
         this.cliente = cliente;
         this.paciente = paciente;
         this.medicoTratante = medicoTratante;
+        this.fechaTomaMuestra = fechaTomaMuestra;
         this.muestra = muestra;
         this.resultadoCGO = resultadoCGO;
         this.estado = estado;
@@ -72,11 +77,11 @@ public class SolicitudCGO extends DetalleFactura {
         this.observaciones = observaciones;
     }
 
-    public Colaborador getRecepcionista() {
+    public String getRecepcionista() {
         return recepcionista;
     }
 
-    public void setRecepcionista(Colaborador recepcionista) {
+    public void setRecepcionista(String recepcionista) {
         this.recepcionista = recepcionista;
     }
 
@@ -102,6 +107,14 @@ public class SolicitudCGO extends DetalleFactura {
 
     public void setMedicoTratante(MedicoTratante medicoTratante) {
         this.medicoTratante = medicoTratante;
+    }
+
+    public LocalDateTime getFechaTomaMuestra() {
+        return fechaTomaMuestra;
+    }
+
+    public void setFechaTomaMuestra(LocalDateTime fechaTomaMuestra) {
+        this.fechaTomaMuestra = fechaTomaMuestra;
     }
 
     public Muestra getMuestra() {
@@ -134,5 +147,13 @@ public class SolicitudCGO extends DetalleFactura {
         if (facturado) {
             this.setEstado(SolicitudEstado.FACTURADO);
         }
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

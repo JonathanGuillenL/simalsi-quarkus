@@ -8,7 +8,7 @@ public class ResultadoMapper {
 
     public ResultadoCGO toModel(CrearResultadoCGODto resultadoCGODto) {
         var resultado = new ResultadoCGO();
-        resultado.setObservaciones(resultadoCGODto.observaciones());
+        resultado.setObservaciones(resultadoCGODto.diagnostico());
 
         return resultado;
     }

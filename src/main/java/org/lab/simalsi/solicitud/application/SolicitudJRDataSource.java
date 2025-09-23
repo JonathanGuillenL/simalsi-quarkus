@@ -3,24 +3,29 @@ package org.lab.simalsi.solicitud.application;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
-import org.lab.simalsi.factura.models.DetalleFactura;
+import org.lab.simalsi.colaborador.models.Colaborador;
 import org.lab.simalsi.medico.models.MedicoTratante;
 import org.lab.simalsi.paciente.models.Paciente;
 import org.lab.simalsi.persona.models.PersonaNatural;
 import org.lab.simalsi.solicitud.models.SolicitudCGO;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class SolicitudJRDataSource implements JRDataSource {
 
     private List<SolicitudCGO> solicitudesCGO;
+    private Colaborador recepcionista;
     private int index;
 
-    public SolicitudJRDataSource(List<SolicitudCGO> solicitudesCGO) {
+    public SolicitudJRDataSource(List<SolicitudCGO> solicitudesCGO, Colaborador recepcionista) {
         index = -1;
         this.solicitudesCGO = solicitudesCGO;
+        this.recepcionista = recepcionista;
     }
 
     @Override
@@ -48,6 +53,15 @@ public class SolicitudJRDataSource implements JRDataSource {
             return ChronoUnit.YEARS.between(paciente.getNacimiento(), LocalDate.now());
         }
 
+        if ("sexo".equals(fieldName)) {
+            return paciente.getSexo().name();
+        }
+
+        if ("observaciones".equals(fieldName)) {
+            String observaciones = solicitudCGO.getObservaciones();
+            return Objects.requireNonNullElse(observaciones, "-");
+        }
+
         if ("telefono".equals(fieldName)) {
             return paciente.getPersona().getTelefono();
         }
@@ -57,11 +71,11 @@ public class SolicitudJRDataSource implements JRDataSource {
         }
 
         if ("region".equals(fieldName)) {
-            return solicitudCGO.getServicioLaboratorio().getProcedimiento().getRegionAnatomica().getDescripcion();
+            return solicitudCGO.getServicioLaboratorio().getProcedimientoQuirurgico().getRegionAnatomica().getDescripcion();
         }
 
         if ("procedimiento".equals(fieldName)) {
-            return solicitudCGO.getServicioLaboratorio().getProcedimiento().getDescripcion();
+            return solicitudCGO.getServicioLaboratorio().getProcedimientoQuirurgico().getDescripcion();
         }
 
         if ("medico_tratante".equals(fieldName)) {
@@ -70,6 +84,8 @@ public class SolicitudJRDataSource implements JRDataSource {
                 PersonaNatural persona = medicoTratante.getPersona();
                 return persona.getNombre() + " " + persona.getApellido();
             }
+
+            return "-";
         }
 
         if ("codigo_sanitario".equals(fieldName)) {
@@ -77,6 +93,20 @@ public class SolicitudJRDataSource implements JRDataSource {
             if (medicoTratante != null) {
                 return solicitudCGO.getMedicoTratante().getCodigoSanitario();
             }
+
+            return "-";
+        }
+
+        if ("fecha_muestra".equals(fieldName)) {
+            return Date.from(solicitudCGO.getFechaTomaMuestra().atZone(ZoneId.systemDefault()).toInstant());
+        }
+
+        if ("creado_en".equals(fieldName)) {
+            return Date.from(solicitudCGO.getFechaSolicitud().atZone(ZoneId.systemDefault()).toInstant());
+        }
+
+        if ("recepcionista".equals(fieldName)) {
+            return recepcionista.getFullname();
         }
 
         return null;

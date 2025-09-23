@@ -6,7 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.lab.simalsi.common.PageDto;
 import org.lab.simalsi.solicitud.infrastructure.CajaRepository;
+import org.lab.simalsi.solicitud.infrastructure.LaminaRepository;
 import org.lab.simalsi.solicitud.models.Caja;
+import org.lab.simalsi.solicitud.models.Lamina;
 
 import java.util.List;
 
@@ -16,16 +18,32 @@ public class CajaService {
     @Inject
     private CajaRepository cajaRepository;
 
-    public PageDto<Caja> obtenerPageCaja(int page, int size) {
+    @Inject
+    private LaminaRepository laminaRepository;
+
+    public PageDto<CajaResponseDto> obtenerPageCaja(int page, int size) {
         PanacheQuery<Caja> query = cajaRepository.findAll();
-        List<Caja> lista = query.page(Page.of(page, size)).list();
+        List<CajaResponseDto> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(caja -> new CajaResponseDto(caja.getId(), caja.getNumeroColumnas(), caja.getNumeroFilas()))
+            .toList();
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public List<Caja> obtenerListCajas() {
-        return cajaRepository.findAll().list();
+    public List<CajaResponseDto> obtenerListCajas() {
+        List<Caja> cajas = cajaRepository.listAll();
+        return cajas.stream()
+            .map(caja -> new CajaResponseDto(caja.getId(), caja.getNumeroColumnas(), caja.getNumeroFilas()))
+            .toList();
+    }
+
+    public List<LaminaResponseDto> obtenerLaminasPorCajaId(Long id) {
+        return laminaRepository.find("caja.id", id)
+            .stream()
+            .map(lamina -> new LaminaResponseDto(lamina.getId(), lamina.getFila(), lamina.getColumna(), lamina.getCaja().getId()))
+            .toList();
     }
 
     public Caja registrarCaja(CrearCajaDto cajaDto) {

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.lab.simalsi.persona.models.Persona;
 import org.lab.simalsi.persona.models.PersonaNatural;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class MedicoTratante {
     @Id
@@ -16,7 +18,12 @@ public class MedicoTratante {
     @OneToOne(cascade = CascadeType.ALL)
     private PersonaNatural persona;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
+
     public MedicoTratante() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public MedicoTratante(Long id, String codigoSanitario, PersonaNatural persona) {
@@ -47,5 +54,21 @@ public class MedicoTratante {
 
     public void setPersona(PersonaNatural persona) {
         this.persona = persona;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

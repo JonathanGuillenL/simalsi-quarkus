@@ -10,6 +10,7 @@ public class DetalleFactura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, scale = 2)
     private Double precio;
 
     private boolean facturado;

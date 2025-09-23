@@ -2,9 +2,9 @@ package org.lab.simalsi.paciente.models;
 
 import jakarta.persistence.*;
 import org.lab.simalsi.persona.models.PersonaNatural;
-import org.lab.simalsi.solicitud.models.SolicitudEstadoConverter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Entity
@@ -21,13 +21,21 @@ public class Paciente {
     @OneToOne(cascade = CascadeType.ALL)
     private PersonaNatural persona;
 
-    public Paciente() {}
+    private LocalDateTime createdAt;
 
-    public Paciente(Long id, LocalDate nacimiento, Sexo sexo, PersonaNatural persona) {
+    private LocalDateTime deletedAt;
+
+    public Paciente() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Paciente(Long id, LocalDate nacimiento, Sexo sexo, PersonaNatural persona, LocalDateTime createdAt, LocalDateTime deletedAt) {
         this.id = id;
         this.nacimiento = nacimiento;
         this.sexo = sexo;
         this.persona = persona;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -64,5 +72,21 @@ public class Paciente {
 
     public void setPersona(PersonaNatural persona) {
         this.persona = persona;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

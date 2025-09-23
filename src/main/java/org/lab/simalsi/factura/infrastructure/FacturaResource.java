@@ -17,10 +17,8 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.lab.simalsi.common.PageDto;
-import org.lab.simalsi.factura.application.CrearFacturaDto;
-import org.lab.simalsi.factura.application.FacturaService;
-import org.lab.simalsi.factura.application.PagoDto;
-import org.lab.simalsi.factura.application.PagoService;
+import org.lab.simalsi.common.SimalsiRoles;
+import org.lab.simalsi.factura.application.*;
 import org.lab.simalsi.factura.models.Factura;
 import org.lab.simalsi.factura.models.Pago;
 
@@ -43,21 +41,26 @@ public class FacturaResource {
     JWTParser jwtParser;
 
     @GET
-    @RolesAllowed("ROLE_RECEPCIONISTA")
-    public PageDto<Factura> obtenerFacturas(@RestQuery @DefaultValue("0") int page,
-                                            @RestQuery @DefaultValue("10") int size) {
-        return facturaService.listarFacturas(page, size);
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.CLIENTE, SimalsiRoles.RECEPCIONISTA})
+    public PageDto<FacturaPageResponseDto> obtenerFacturas(@RestQuery @DefaultValue("0") int page,
+                                            @RestQuery @DefaultValue("10") int size,
+                                            FacturaQueryDto facturaQueryDto) {
+        if (securityContext.getUserPrincipal() != null && securityContext.isUserInRole(SimalsiRoles.CLIENTE)) {
+            return facturaService.listarFacturasByCliente(page, size, securityContext.getUserPrincipal().getName(), facturaQueryDto);
+        }
+        return facturaService.listarFacturas(page, size, facturaQueryDto);
     }
 
     @GET
     @Path("{id}")
-    public Factura show(@RestPath Long id) {
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.CLIENTE, SimalsiRoles.RECEPCIONISTA})
+    public FacturaResponseDto show(@RestPath Long id) {
         return facturaService.obtenerFacturaPorId(id);
     }
 
     @POST
     @Path("generate-token/{id}")
-    @RolesAllowed("ROLE_RECEPCIONISTA")
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.CLIENTE, SimalsiRoles.RECEPCIONISTA})
     public Response generateToken(@RestPath Long id, @Context UriInfo info) {
         String userId = securityContext.getUserPrincipal() != null
             ? securityContext.getUserPrincipal().getName()
@@ -103,7 +106,7 @@ public class FacturaResource {
 
     @POST
     @Transactional
-    @RolesAllowed("ROLE_RECEPCIONISTA")
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.RECEPCIONISTA})
     public Factura store(@Valid CrearFacturaDto facturaDto) {
         String userId = securityContext.getUserPrincipal() != null
             ? securityContext.getUserPrincipal().getName() : null;
@@ -112,8 +115,17 @@ public class FacturaResource {
 
     @POST
     @Transactional
-    @Path("/pago/{id}")
-    public Pago pago(@RestPath Long id, @Valid PagoDto pagoDto) {
-        return pagoService.realizarPago(id, pagoDto);
+    @Path("/{facturaId}/pago")
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.RECEPCIONISTA})
+    public Factura pago(@RestPath Long facturaId, @Valid PagoDto pagoDto) {
+        return pagoService.realizarPago(facturaId, pagoDto);
+    }
+
+    @PUT
+    @Transactional
+    @Path("/{facturaId}/pago/{pagoId}")
+    @RolesAllowed({SimalsiRoles.ADMIN})
+    public FacturaResponseDto anularPago(@RestPath Long facturaId, @RestPath Long pagoId) {
+        return pagoService.anularPago(facturaId, pagoId);
     }
 }

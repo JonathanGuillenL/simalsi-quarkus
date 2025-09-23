@@ -3,6 +3,7 @@ package org.lab.simalsi.factura.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Descuento {
@@ -28,10 +29,17 @@ public class Descuento {
     @Column(nullable = false)
     private Boolean automatico;
 
-    public Descuento() {}
+    private LocalDateTime createdAt;
+
+    private LocalDateTime deletedAt;
+
+    public Descuento() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Descuento(Long id, String descripcion, Double porcentaje, LocalDate fechaInicio,
-                     LocalDate fechaFin, Boolean anual, Boolean automatico) {
+                     LocalDate fechaFin, Boolean anual, Boolean automatico,
+                     LocalDateTime createdAt, LocalDateTime deletedAt) {
         this.id = id;
         this.descripcion = descripcion;
         this.porcentaje = porcentaje;
@@ -39,6 +47,8 @@ public class Descuento {
         this.fechaFin = fechaFin;
         this.anual = anual;
         this.automatico = automatico;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -95,6 +105,22 @@ public class Descuento {
 
     public void setAutomatico(Boolean automatico) {
         this.automatico = automatico;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public boolean isDisponible(LocalDate fecha) {

@@ -1,9 +1,8 @@
 package org.lab.simalsi.factura.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Moneda {
@@ -13,16 +12,25 @@ public class Moneda {
 
     private String descripcion;
 
+    @Column(nullable = false, scale = 2)
     private Double tipoCambio;
 
     private String signoMonetario;
 
-    public Moneda() {}
+    private LocalDateTime createdAt;
 
-    public Moneda(String descripcion, Double tipoCambio, String signoMonetario) {
+    private LocalDateTime deletedAt;
+
+    public Moneda() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Moneda(String descripcion, Double tipoCambio, String signoMonetario, LocalDateTime createdAt, LocalDateTime deletedAt) {
         this.descripcion = descripcion;
         this.tipoCambio = tipoCambio;
         this.signoMonetario = signoMonetario;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -55,5 +63,21 @@ public class Moneda {
 
     public void setSignoMonetario(String signoMonetario) {
         this.signoMonetario = signoMonetario;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

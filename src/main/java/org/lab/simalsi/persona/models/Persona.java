@@ -64,4 +64,8 @@ public abstract class Persona {
     public void setTipoPersona(TipoPersona tipoPersona) {
         this.tipoPersona = tipoPersona;
     }
+
+    public String getFullname() {
+        return nombre;
+    }
 }

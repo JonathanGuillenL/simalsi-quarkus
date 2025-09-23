@@ -7,6 +7,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -16,9 +17,9 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.reactive.RestPath;
 import org.jboss.resteasy.reactive.RestQuery;
 import org.lab.simalsi.common.PageDto;
+import org.lab.simalsi.common.SimalsiRoles;
 import org.lab.simalsi.factura.models.DetalleFactura;
-import org.lab.simalsi.solicitud.application.CrearSolicitudCGODto;
-import org.lab.simalsi.solicitud.application.SolicitudService;
+import org.lab.simalsi.solicitud.application.*;
 import org.lab.simalsi.solicitud.models.SolicitudCGO;
 import org.lab.simalsi.solicitud.models.SolicitudEstado;
 
@@ -26,7 +27,6 @@ import java.net.URI;
 import java.time.temporal.ChronoUnit;
 
 @Path("/solicitud/cgo")
-@RolesAllowed({"ROLE_RECEPCIONISTA", "ROLE_HISTOTECNOLOGO", "ROLE_PATOLOGO"})
 public class SolicitudCGOResource {
 
     @Inject
@@ -39,21 +39,47 @@ public class SolicitudCGOResource {
     SolicitudService solicitudService;
 
     @GET
-    public PageDto<SolicitudCGO> all(@RestQuery @DefaultValue("0") int page,
-                                     @RestQuery @DefaultValue("10") int size) {
-        if (securityContext.isUserInRole("ROLE_RECEPCIONISTA")) {
-            return solicitudService.obtenerListaSolicitudes(page, size);
-        } else if (securityContext.isUserInRole("ROLE_HISTOTECNOLOGO")) {
-            return solicitudService.obtenerListaSolicitudesPorEstado(page, size, SolicitudEstado.FACTURADO);
-        } else if (securityContext.isUserInRole("ROLE_PATOLOGO")) {
-            return solicitudService.obtenerListaSolicitudesPorEstado(page, size, SolicitudEstado.PROCESADO);
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.RECEPCIONISTA, SimalsiRoles.HISTOTECNOLOGO, SimalsiRoles.PATOLOGO})
+    public PageDto<SolicitudPageResponse> all(@RestQuery @DefaultValue("0") int page,
+                                              @RestQuery @DefaultValue("10") int size,
+                                              SolicitudCGOQueryDto solicitudCGOQueryDto) {
+        if (securityContext.isUserInRole(SimalsiRoles.RECEPCIONISTA) || securityContext.isUserInRole(SimalsiRoles.ADMIN)) {
+            return solicitudService.obtenerListaSolicitudes(page, size, solicitudCGOQueryDto);
+        } else if (securityContext.isUserInRole(SimalsiRoles.HISTOTECNOLOGO)) {
+            solicitudCGOQueryDto.solicitudEstado = SolicitudEstado.FACTURADO;
+            return solicitudService.obtenerListaSolicitudes(page, size, solicitudCGOQueryDto);
+        } else if (securityContext.isUserInRole(SimalsiRoles.PATOLOGO)) {
+            solicitudCGOQueryDto.solicitudEstado = SolicitudEstado.PROCESADO;
+            return solicitudService.obtenerListaSolicitudes(page, size, solicitudCGOQueryDto);
         }
+
+        return null;
+    }
+
+    @GET
+    @Path("historial")
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.CLIENTE, SimalsiRoles.HISTOTECNOLOGO, SimalsiRoles.PATOLOGO})
+    public PageDto<SolicitudPageResponse> historial(@RestQuery @DefaultValue("0") int page,
+                                     @RestQuery @DefaultValue("10") int size,
+                                     SolicitudCGOQueryDto solicitudCGOQueryDto) {
+        String userId = securityContext.getUserPrincipal() != null ?
+            securityContext.getUserPrincipal().getName() : null;
+
+        if (securityContext.isUserInRole("ROLE_HISTOTECNOLOGO")) {
+            return solicitudService.obtenerHistorialSolicitudes(page, size, userId, "ROLE_HISTOTECNOLOGO", solicitudCGOQueryDto);
+        } else if (securityContext.isUserInRole("ROLE_PATOLOGO")) {
+            return solicitudService.obtenerHistorialSolicitudes(page, size, userId, "ROLE_PATOLOGO", solicitudCGOQueryDto);
+        } else if (securityContext.isUserInRole("ROLE_CLIENTE")) {
+            return solicitudService.obtenerHistorialSolicitudes(page, size, userId, "ROLE_CLIENTE", solicitudCGOQueryDto);
+        }
+
         return null;
     }
 
     @GET
     @Path("no-facturada/{clienteId}")
-    public PageDto<SolicitudCGO> noFacturadas(@RestQuery @DefaultValue("0") int page,
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.RECEPCIONISTA})
+    public PageDto<SolicitudPageResponse> noFacturadas(@RestQuery @DefaultValue("0") int page,
                                        @RestQuery @DefaultValue("10") int size,
                                        @RestPath Long clienteId) {
         return solicitudService.obtenerListaSolicitudesNoFacturadasPorClienteId(page, size, clienteId);
@@ -61,13 +87,14 @@ public class SolicitudCGOResource {
 
     @GET
     @Path("{id}")
-    public SolicitudCGO show(@RestPath Long id) {
+    public SolicitudCGOResponse show(@RestPath Long id) {
         return solicitudService.obtenerSolicitudPorId(id);
     }
 
     @POST
     @Transactional
-    public SolicitudCGO store(CrearSolicitudCGODto solicitudCGODto) {
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.RECEPCIONISTA})
+    public SolicitudCGOResponse store(@Valid CrearSolicitudCGODto solicitudCGODto) {
         String userId = securityContext.getUserPrincipal() != null
             ? securityContext.getUserPrincipal().getName()
             : null;
@@ -76,7 +103,7 @@ public class SolicitudCGOResource {
 
     @POST
     @Path("generate-token/{id}")
-    @RolesAllowed("ROLE_RECEPCIONISTA")
+    @RolesAllowed({SimalsiRoles.ADMIN, SimalsiRoles.CLIENTE, SimalsiRoles.RECEPCIONISTA, SimalsiRoles.HISTOTECNOLOGO, SimalsiRoles.PATOLOGO})
     public Response generateToken(@RestPath Long id, @Context UriInfo info) {
         String userId = securityContext.getUserPrincipal() != null
             ? securityContext.getUserPrincipal().getName()
@@ -119,5 +146,13 @@ public class SolicitudCGOResource {
         } catch (ParseException e) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
+    }
+
+    @DELETE
+    @Path("{id}")
+    @Transactional
+    @RolesAllowed({SimalsiRoles.ADMIN})
+    public void destroy(@RestPath Long id) {
+        solicitudService.desactivarSolicitud(id);
     }
 }

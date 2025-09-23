@@ -3,6 +3,7 @@ package org.lab.simalsi.paciente.application;
 import org.lab.simalsi.paciente.models.Sexo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record PacienteResponseDto(
     Long id,
@@ -12,6 +13,8 @@ public record PacienteResponseDto(
     LocalDate nacimiento,
     Sexo sexo,
     String telefono,
-    String direccion
+    String direccion,
+    LocalDateTime createdAt,
+    LocalDateTime deletedAt
 ) {
 }

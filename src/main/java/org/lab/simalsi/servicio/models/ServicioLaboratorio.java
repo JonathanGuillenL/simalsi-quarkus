@@ -2,6 +2,8 @@ package org.lab.simalsi.servicio.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class ServicioLaboratorio {
     @Id
@@ -16,13 +18,21 @@ public class ServicioLaboratorio {
     @JoinColumn(name = "procedimiento_id", referencedColumnName = "id")
     private ProcedimientoQuirurgico procedimientoQuirurgico;
 
-    public ServicioLaboratorio() {}
+    private LocalDateTime createdAt;
 
-    public ServicioLaboratorio(Long id, String descripcion, Double precio, ProcedimientoQuirurgico procedimientoQuirurgico) {
+    private LocalDateTime deletedAt;
+
+    public ServicioLaboratorio() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public ServicioLaboratorio(Long id, String descripcion, Double precio, ProcedimientoQuirurgico procedimientoQuirurgico, LocalDateTime createdAt, LocalDateTime deletedAt) {
         this.id = id;
         this.descripcion = descripcion;
         this.precio = precio;
         this.procedimientoQuirurgico = procedimientoQuirurgico;
+        this.createdAt = createdAt;
+        this.deletedAt = deletedAt;
     }
 
     public Long getId() {
@@ -49,11 +59,27 @@ public class ServicioLaboratorio {
         this.precio = precio;
     }
 
-    public ProcedimientoQuirurgico getProcedimiento() {
+    public ProcedimientoQuirurgico getProcedimientoQuirurgico() {
         return procedimientoQuirurgico;
     }
 
-    public void setProcedimiento(ProcedimientoQuirurgico procedimientoQuirurgico) {
+    public void setProcedimientoQuirurgico(ProcedimientoQuirurgico procedimientoQuirurgico) {
         this.procedimientoQuirurgico = procedimientoQuirurgico;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

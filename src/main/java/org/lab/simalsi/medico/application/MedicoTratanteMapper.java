@@ -15,7 +15,6 @@ public class MedicoTratanteMapper {
         var persona = new PersonaNatural();
         persona.setNombre(medicoTratanteDto.nombres());
         persona.setApellido(medicoTratanteDto.apellidos());
-        persona.setNumeroIdentificacion(medicoTratanteDto.numeroIdentificacion());
         persona.setTelefono(medicoTratanteDto.telefono());
         persona.setDireccion(medicoTratanteDto.direccion());
 
@@ -30,7 +29,9 @@ public class MedicoTratanteMapper {
             medicoTratante.getId(),
             String.format("%s %s", persona.getNombre(), persona.getApellido()),
             medicoTratante.getCodigoSanitario(),
-            persona.getTelefono()
+            persona.getTelefono(),
+            medicoTratante.getCreatedAt(),
+            medicoTratante.getDeletedAt()
         );
     }
 
@@ -42,7 +43,9 @@ public class MedicoTratanteMapper {
             persona.getApellido(),
             medicoTratante.getCodigoSanitario(),
             persona.getTelefono(),
-            persona.getDireccion()
+            persona.getDireccion(),
+            medicoTratante.getCreatedAt(),
+            medicoTratante.getDeletedAt()
         );
     }
 }

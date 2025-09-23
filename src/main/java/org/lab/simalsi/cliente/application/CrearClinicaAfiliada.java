@@ -1,16 +1,17 @@
 package org.lab.simalsi.cliente.application;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.lab.simalsi.cliente.models.TipoCliente;
 
-public record CrearClienteJuridicoDto(
-    @NotBlank(message = "El campo nombres es requerido.") String nombre,
-    @NotNull(message = "Tipo de clienet es requerido.") TipoCliente tipoCliente,
-    @NotBlank(message = "El campo razón social es requerido.") String razonSocial,
+public record CrearClinicaAfiliada(
+    @NotBlank(message = "El campo nombre es requerido.") String nombre,
+    String razonSocial,
     @NotBlank(message = "El campo teléfono es requerido.") String telefono,
     @NotBlank(message = "El campo dirección es requerido.") String direccion,
-    @NotBlank(message = "El campo email es requerido.") String email,
-    @NotBlank(message = "El campo RUC es requerido.") String ruc
+    @Email(message = "El correo electróno no es válido.") String email,
+    @NotBlank(message = "El campo RUC es requerido.") String ruc,
+    @NotNull(message = "El campo departamento es requerido.") Long departamentoId,
+    @NotNull(message = "El campo municipio es requerido.") Long municipioId
 ) {
 }

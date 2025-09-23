@@ -3,11 +3,13 @@ package org.lab.simalsi.home;
 import org.lab.simalsi.solicitud.models.SolicitudEstado;
 
 public class SolicitudCountDto {
-    public SolicitudEstado estado;
-    public Long cantidad;
+    public Integer year;
+    public Integer month;
+    public Long count;
 
-    public SolicitudCountDto(SolicitudEstado estado, Long cantidad) {
-        this.estado = estado;
-        this.cantidad = cantidad;
+    public SolicitudCountDto(Integer year, Integer month, Long count) {
+        this.year = year;
+        this.month = month;
+        this.count = count;
     }
 }

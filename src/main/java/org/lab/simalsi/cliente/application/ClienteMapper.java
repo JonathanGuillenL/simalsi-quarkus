@@ -2,6 +2,8 @@ package org.lab.simalsi.cliente.application;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.lab.simalsi.cliente.models.Cliente;
+import org.lab.simalsi.medico.models.MedicoTratante;
+import org.lab.simalsi.paciente.models.Paciente;
 import org.lab.simalsi.persona.models.PersonaJuridica;
 import org.lab.simalsi.persona.models.PersonaNatural;
 
@@ -16,52 +18,81 @@ public class ClienteMapper {
         return cliente;
     }
 
-    public Cliente toModel(CrearClienteNaturalDto clienteDto) {
+    public Cliente toModel(CrearClienteEspontaneoDto clienteDto) {
         var cliente = new Cliente();
-        cliente.setEmail(clienteDto.email());
 
-        var persona = new PersonaNatural();
-        persona.setNombre(clienteDto.nombres());
-        persona.setApellido(clienteDto.apellidos());
-        persona.setNumeroIdentificacion(clienteDto.cedula());
-        persona.setTelefono(clienteDto.telefono());
-        persona.setDireccion(clienteDto.direccion());
-
-        cliente.setPersona(persona);
+        if (clienteDto.email() != null && !clienteDto.email().isEmpty()) {
+            cliente.setEmail(clienteDto.email());
+        }
 
         return cliente;
     }
 
-    public Cliente toModel(CrearClienteJuridicoDto clienteDto) {
+    public Cliente toModel(CrearClinicaAfiliada clienteDto) {
         var cliente = new Cliente();
-        cliente.setEmail(clienteDto.email());
 
-        var persona = new PersonaJuridica();
-        persona.setNombre(clienteDto.nombre());
-        persona.setRazonSocial(clienteDto.razonSocial());
-        persona.setTelefono(clienteDto.telefono());
-        persona.setDireccion(clienteDto.direccion());
-
-        cliente.setPersona(persona);
+        if (clienteDto.email() != null && !clienteDto.email().isEmpty()) {
+            cliente.setEmail(clienteDto.email());
+        }
 
         return cliente;
     }
 
-    public ClienteNaturalResponseDto toResponseNatural(Cliente cliente) {
+    public Cliente toModel(CrearMedicoAfiliado clienteDto) {
+        var cliente = new Cliente();
+
+        if (clienteDto.email() != null && !clienteDto.email().isEmpty()) {
+            cliente.setEmail(clienteDto.email());
+        }
+
+        return cliente;
+    }
+
+    public ClienteEspontaneoResponseDto toResponseNatural(Cliente cliente, Paciente paciente) {
         PersonaNatural persona = (PersonaNatural) cliente.getPersona();
-        return new ClienteNaturalResponseDto(
+        if (paciente == null) {
+            return new ClienteEspontaneoResponseDto(
+                cliente.getId(), persona.getNombre(), persona.getApellido(),
+                null, null,
+                persona.getNumeroIdentificacion(), persona.getTelefono(),
+                persona.getDireccion(), cliente.getEmail(), cliente.getUsername(),
+                cliente.getTipoCliente(), null,
+                cliente.getCreatedAt(), cliente.getDeletedAt()
+            );
+        }
+
+        return new ClienteEspontaneoResponseDto(
             cliente.getId(), persona.getNombre(), persona.getApellido(),
+            paciente.getNacimiento(), paciente.getSexo(),
             persona.getNumeroIdentificacion(), persona.getTelefono(),
-            persona.getDireccion(), cliente.getEmail(), cliente.getUsername()
+            persona.getDireccion(), cliente.getEmail(), cliente.getUsername(),
+            cliente.getTipoCliente(), paciente.getId(),
+            cliente.getCreatedAt(), cliente.getDeletedAt()
         );
     }
 
-    public ClienteJuridicoResponseDto toResponseJuridico(Cliente cliente) {
+    public MedicoAfiliadoResponseDto toResponseNatural(Cliente cliente, MedicoTratante medicoTratante) {
+        PersonaNatural persona = (PersonaNatural) cliente.getPersona();
+        return new MedicoAfiliadoResponseDto(
+            cliente.getId(), persona.getNombre(), persona.getApellido(),
+            medicoTratante.getCodigoSanitario(),
+            persona.getNumeroIdentificacion(), persona.getTelefono(),
+            persona.getDireccion(), cliente.getEmail(), cliente.getUsername(),
+            medicoTratante.getId(), cliente.getTipoCliente(),
+            cliente.getCreatedAt(), cliente.getDeletedAt()
+        );
+    }
+
+    public ClinicaAfiliadaResponseDto toResponseJuridico(Cliente cliente) {
         PersonaJuridica personaJuridica = (PersonaJuridica) cliente.getPersona();
-        return new ClienteJuridicoResponseDto(
+        return new ClinicaAfiliadaResponseDto(
             cliente.getId(), personaJuridica.getNombre(), personaJuridica.getRazonSocial(),
             personaJuridica.getTelefono(), personaJuridica.getDireccion(),
-            cliente.getEmail(), cliente.getUsername(), personaJuridica.getRUC()
+            cliente.getEmail(), cliente.getUsername(), personaJuridica.getRUC(),
+            personaJuridica.getMunicipio().getDepartamento().getId(),
+            personaJuridica.getMunicipio().getId(),
+            personaJuridica.getId(), cliente.getTipoCliente(),
+            cliente.getCreatedAt(), cliente.getDeletedAt()
         );
     }
 }

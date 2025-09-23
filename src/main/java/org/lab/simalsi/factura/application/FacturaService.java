@@ -10,32 +10,33 @@ import jakarta.ws.rs.NotFoundException;
 import net.sf.jasperreports.engine.*;
 import org.lab.simalsi.cliente.infrastructure.ClienteRepository;
 import org.lab.simalsi.cliente.models.Cliente;
+import org.lab.simalsi.cliente.models.TipoCliente;
 import org.lab.simalsi.colaborador.infrastructure.ColaboradorRepository;
 import org.lab.simalsi.colaborador.models.Colaborador;
+import org.lab.simalsi.common.GeneralErrorException;
 import org.lab.simalsi.common.PageDto;
 import org.lab.simalsi.factura.infrastructure.*;
 import org.lab.simalsi.factura.models.*;
 import org.lab.simalsi.persona.models.Persona;
 import org.lab.simalsi.persona.models.PersonaJuridica;
 import org.lab.simalsi.persona.models.PersonaNatural;
+import org.lab.simalsi.servicio.infrastructure.ServicioLaboratorioRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ApplicationScoped
 public class FacturaService {
 
     @Inject
     FacturaRepository facturaRepository;
+
+    @Inject
+    FacturaMapper facturaMapper;
 
     @Inject
     ClienteRepository clienteRepository;
@@ -58,17 +59,28 @@ public class FacturaService {
     @Inject
     private PagoMapper pagoMapper;
 
-    public PageDto<Factura> listarFacturas(int page, int size) {
-        PanacheQuery<Factura> query = facturaRepository.findAll();
-        List<Factura> lista = query.page(Page.of(page, size)).list();
+    public PageDto<FacturaPageResponseDto> listarFacturasByCliente(int page, int size, String userId, FacturaQueryDto facturaQueryDto) {
+        Cliente cliente = clienteRepository.findByUsername(userId)
+            .orElseThrow(() -> new NotFoundException("Cliente no encontrado."));
+        facturaQueryDto.clienteId = cliente.getId();
+        return listarFacturas(page, size, facturaQueryDto);
+    }
+
+    public PageDto<FacturaPageResponseDto> listarFacturas(int page, int size, FacturaQueryDto facturaQueryDto) {
+        PanacheQuery<Factura> query = facturaRepository.findByQueryDto(facturaQueryDto);
+        List<FacturaPageResponseDto> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(facturaMapper::toPageResponse)
+            .toList();
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public Factura obtenerFacturaPorId(Long id) {
-        return facturaRepository.findByIdOptional(id)
+    public FacturaResponseDto obtenerFacturaPorId(Long id) {
+        Factura factura = facturaRepository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Factura no encontrada."));
+        return facturaMapper.toResponse(factura);
     }
 
     public String generateToken(Long facturaId, String userId, long amountToAdd, TemporalUnit unit) {
@@ -90,12 +102,12 @@ public class FacturaService {
         Colaborador recepcionista = colaboradorRepository.findColaboradorByUsername(userId)
             .orElseThrow(() -> new NotFoundException("Colaborador con userId no encontrado"));
 
-        if (!recepcionista.getCargo().getNombre().equals("Recepcionista")) {
-            throw new NotFoundException("Colaborador no tiene asignado cargo Recepcionista");
-        }
-
         Cliente cliente = clienteRepository.findByIdOptional(facturaDto.clienteId())
             .orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
+
+        if (facturaDto.detalle() == null || facturaDto.detalle().isEmpty()) {
+            throw new GeneralErrorException("La factura debe tener al menos un servicio asociado.");
+        }
 
         List<DescuentoFactura> descuentoFacturas = facturaDto.descuentos().stream().map(descuentoId -> {
             Descuento descuento = descuentoRepository.findById(descuentoId);
@@ -130,7 +142,7 @@ public class FacturaService {
         }).toList();
 
         Factura factura = new Factura();
-        factura.setRecepcionista(recepcionista);
+        factura.setRecepcionista(userId);
         factura.setCliente(cliente);
         factura.setDescuentos(descuentoFacturas);
         factura.setDetalle(detalleFacturas);
@@ -144,15 +156,26 @@ public class FacturaService {
                 .orElseThrow(() -> new NotFoundException("Metodo de pago no encontrado."));
 
             Pago pago = pagoMapper.toModel(pagoDto);
-            pago.setCambio(moneda.getTipoCambio());
+            pago.setTipoCambio(moneda.getTipoCambio());
             pago.setMoneda(moneda);
             pago.setMetodoPago(metodoPago);
 
+            if (pago.calcularMontoCambio() > factura.calcularSaldoPendiente()) {
+                throw new GeneralErrorException("Monto de pago es mayor al saldo pendiente.");
+            }
+            if (cliente.getTipoCliente() == TipoCliente.CLIENTE_ESPONTANEO && !Objects.equals(pago.calcularMontoCambio(), factura.calcularSaldoPendiente())) {
+                throw new GeneralErrorException("Cliente espontáneo debe completar el pago de la factura.");
+            }
+
             factura.addPago(pago);
+        } else {
+            if (cliente.getTipoCliente() == TipoCliente.CLIENTE_ESPONTANEO) {
+                throw new GeneralErrorException("La factura debe tener una pago asociado.");
+            }
         }
 
-        factura.calcularDescuento();
-        factura.calcularSubtotal();
+        factura.calcularTotales();
+        factura.calcularSaldoPendiente();
 
         facturaRepository.persist(factura);
 
@@ -175,9 +198,16 @@ public class FacturaService {
             params.put("cliente", personaNatural.getNombre() + " " + personaNatural.getApellido());
         }
 
-        Double subtotal = factura.calcularSubtotal();
-        Double descuento = factura.calcularDescuento();
+        Double total = factura.calcularTotales();
+        Double subtotal = factura.getSubtotal();
+        Double descuento = factura.getDescuento();
+        Colaborador recepcionista = colaboradorRepository.findColaboradorByUsername(factura.getRecepcionista())
+            .orElseThrow(() -> new NotFoundException("Recepcionista no encontrado"));
+        Date fechaSolicitud = Date.from(factura.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
 
+        params.put("signoMonetario", "C$");
+        params.put("creado_en", fechaSolicitud);
+        params.put("recepcionista", recepcionista.getFullname());
         params.put("factura_id", factura.getId());
         params.put("subtotal", subtotal);
         params.put("descuento", subtotal * descuento / 100);

@@ -15,18 +15,13 @@ import org.lab.simalsi.cliente.infrastructure.ClienteRepository;
 import org.lab.simalsi.cliente.models.Cliente;
 import org.lab.simalsi.colaborador.infrastructure.ColaboradorRepository;
 import org.lab.simalsi.colaborador.models.Colaborador;
+import org.lab.simalsi.common.GeneralErrorException;
 import org.lab.simalsi.common.PageDto;
-import org.lab.simalsi.factura.application.FacturaJRDataSource;
 import org.lab.simalsi.factura.infrastructure.DetalleFacturaRepository;
-import org.lab.simalsi.factura.models.DetalleFactura;
-import org.lab.simalsi.factura.models.Factura;
 import org.lab.simalsi.medico.infrastructure.MedicoTratanteRepository;
 import org.lab.simalsi.medico.models.MedicoTratante;
 import org.lab.simalsi.paciente.infrastructure.PacienteRepository;
 import org.lab.simalsi.paciente.models.Paciente;
-import org.lab.simalsi.persona.models.Persona;
-import org.lab.simalsi.persona.models.PersonaJuridica;
-import org.lab.simalsi.persona.models.PersonaNatural;
 import org.lab.simalsi.servicio.infrastructure.ServicioLaboratorioRepository;
 import org.lab.simalsi.servicio.models.ServicioLaboratorio;
 import org.lab.simalsi.solicitud.infrastructure.SolicitudCGORepository;
@@ -36,9 +31,12 @@ import org.lab.simalsi.solicitud.models.SolicitudEstado;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SolicitudService {
@@ -67,36 +65,85 @@ public class SolicitudService {
     @Inject
     SolicitudMapper solicitudMapper;
 
-    public PageDto<SolicitudCGO> obtenerListaSolicitudes(int page, int size) {
-        PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findAll();
-        List<SolicitudCGO> lista = query.page(Page.of(page, size)).list();
+    public PageDto<SolicitudPageResponse> obtenerListaSolicitudes(int page, int size, SolicitudCGOQueryDto solicitudCGOQueryDto) {
+        PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findByQueryDto(solicitudCGOQueryDto);
+        List<SolicitudPageResponse> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(solicitudMapper::toResponsePage)
+            .collect(Collectors.toList());
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public PageDto<SolicitudCGO> obtenerListaSolicitudesPorEstado(int page, int size, SolicitudEstado estado) {
+    public PageDto<SolicitudPageResponse> obtenerListaSolicitudesPorEstado(int page, int size, SolicitudEstado estado) {
         PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findByEstado(estado);
-        List<SolicitudCGO> lista = query.page(Page.of(page, size)).list();
+        List<SolicitudPageResponse> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(solicitudMapper::toResponsePage)
+            .collect(Collectors.toList());;
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public PageDto<SolicitudCGO> obtenerListaSolicitudesNoFacturadasPorClienteId(int page, int size, Long clienteId) {
+    public PageDto<SolicitudPageResponse> obtenerHistorialSolicitudes(int page, int size, String userId, String rol, SolicitudCGOQueryDto solicitudCGOQueryDto) {
+        Log.infof("Rol: %s, User: %s", rol, userId);
+        if (!Objects.equals(rol, "ROLE_CLIENTE")) {
+            Colaborador colaborador = colaboradorRepository.findColaboradorByUsername(userId)
+                .orElseThrow(() -> new NotFoundException("Colaborador no encontrado."));
+            Log.infof("Colaborador: %d, Cargo: %s", colaborador.getId(), colaborador.getCargo().getCodigo());
+
+            if (Objects.equals(rol, "ROLE_PATOLOGO")) {
+                solicitudCGOQueryDto.patologo = userId;
+                solicitudCGOQueryDto.solicitudEstado = SolicitudEstado.FINALIZADO;
+            } else if (Objects.equals(rol, "ROLE_HISTOTECNOLOGO")) {
+                solicitudCGOQueryDto.histotecnologo = userId;
+            }
+        } else {
+            Cliente cliente = clienteRepository.findByUsername(userId)
+                .orElseThrow(() -> new NotFoundException("Cliente no encontrado."));
+            solicitudCGOQueryDto.clienteId = cliente.getId();
+        }
+
+        PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findByQueryDto(solicitudCGOQueryDto);
+        List<SolicitudPageResponse> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(solicitudMapper::toResponsePage)
+            .collect(Collectors.toList());
+        int totalPages = query.pageCount();
+
+        return new PageDto<>(lista, page, size, totalPages);
+    }
+
+    public PageDto<SolicitudPageResponse> obtenerListaSolicitudesNoFacturadasPorClienteId(int page, int size, Long clienteId) {
         PanacheQuery<SolicitudCGO> query = solicitudCGORepository.findByClienteIdAndEstado(clienteId, SolicitudEstado.CREADO);
-        List<SolicitudCGO> lista = query.page(Page.of(page, size)).list();
+        List<SolicitudPageResponse> lista = query.page(Page.of(page, size))
+            .stream()
+            .map(solicitudMapper::toResponsePage)
+            .collect(Collectors.toList());
         int totalPages = query.pageCount();
 
         return new PageDto<>(lista, page, size, totalPages);
     }
 
-    public SolicitudCGO obtenerSolicitudPorId(Long id) {
-        return solicitudCGORepository.findByIdOptional(id)
+    public SolicitudCGOResponse obtenerSolicitudPorId(Long id) {
+        var solicitud = solicitudCGORepository.findByIdOptional(id)
             .orElseThrow(() -> new NotFoundException("Solicitud no encontrada."));
+
+        Colaborador recepcionista = colaboradorRepository.findColaboradorByUsername(solicitud.getRecepcionista())
+            .orElseThrow(() -> new NotFoundException("Recepcionista no encontrado"));
+
+        Colaborador histotecnologo = null;
+        if (solicitud.getMuestra() != null) {
+            histotecnologo = colaboradorRepository.findColaboradorByUsername(solicitud.getMuestra().getHistotecnologo())
+                .orElse(null);
+        }
+
+        return solicitudMapper.toResponse(solicitud, recepcionista, histotecnologo);
     }
 
-    public SolicitudCGO registrarSolicitudCGO(String userId, CrearSolicitudCGODto solicitudCGODto) {
+    public SolicitudCGOResponse registrarSolicitudCGO(String userId, CrearSolicitudCGODto solicitudCGODto) {
         SolicitudCGO solicitudCGO = solicitudMapper.toModel(solicitudCGODto);
 
         Cliente cliente = clienteRepository.findByIdOptional(solicitudCGODto.clienteId())
@@ -108,21 +155,26 @@ public class SolicitudService {
         Paciente paciente = pacienteRepository.findByIdOptional(solicitudCGODto.pacienteId())
             .orElseThrow(() -> new NotFoundException("Paciente no encontrado"));
 
-        MedicoTratante medicoTratante = medicoTratanteRepository.findByIdOptional(solicitudCGODto.medicoTratanteId())
-            .orElseThrow(() -> new NotFoundException("Medico tratante no encontrado."));
+        MedicoTratante medicoTratante;
+
+        if (solicitudCGODto.medicoTratanteId() != null) {
+            medicoTratante = medicoTratanteRepository.findByIdOptional(solicitudCGODto.medicoTratanteId())
+                .orElseThrow(() -> new NotFoundException("Médico tratante no encontrado."));
+            solicitudCGO.setMedicoTratante(medicoTratante);
+        }
 
         ServicioLaboratorio servicioLaboratorio = servicioLaboratorioRepository.findByIdOptional(solicitudCGODto.servicioLaboratorioId())
             .orElseThrow(() -> new NotFoundException("Servicio laboratorio no encontrado."));
 
         solicitudCGO.setCliente(cliente);
         solicitudCGO.setPaciente(paciente);
-        solicitudCGO.setMedicoTratante(medicoTratante);
-        solicitudCGO.setRecepcionista(recepcionista);
+        solicitudCGO.setRecepcionista(userId);
         solicitudCGO.setServicioLaboratorio(servicioLaboratorio);
         solicitudCGO.setEstado(SolicitudEstado.CREADO);
+        solicitudCGO.setPrecio(servicioLaboratorio.getPrecio());
         detalleFacturaRepository.persist(solicitudCGO);
 
-        return solicitudCGO;
+        return solicitudMapper.toResponse(solicitudCGO, recepcionista, null);
     }
 
     public String generateToken(Long solicitudId, String userId, long amountToAdd, TemporalUnit unit) {
@@ -146,7 +198,10 @@ public class SolicitudService {
         SolicitudCGO solicitudCGO = solicitudCGORepository.findByIdOptional(solicitudId)
             .orElseThrow(() -> new NotFoundException("Solicitud CGO no encontrada."));
 
-        SolicitudJRDataSource dataSource = new SolicitudJRDataSource(List.of(solicitudCGO));
+        Colaborador recepcionista = colaboradorRepository.findColaboradorByUsername(solicitudCGO.getRecepcionista())
+            .orElseThrow(() -> new NotFoundException("Recepcionista no encontrado"));
+
+        SolicitudJRDataSource dataSource = new SolicitudJRDataSource(List.of(solicitudCGO), recepcionista);
 
         ClassLoader classLoader = Thread.currentThread()
             .getContextClassLoader();
@@ -159,5 +214,17 @@ public class SolicitudService {
             Log.error(e.getCause());
             return null;
         }
+    }
+
+    public void desactivarSolicitud(Long id) {
+        SolicitudCGO solicitudCGO = solicitudCGORepository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Solicitud no encontrada."));
+
+        if (!Objects.equals(solicitudCGO.getEstado(), SolicitudEstado.CREADO)) {
+            throw new GeneralErrorException("Solicitud ya ha sido facturada favor desactive la factura asociada.");
+        }
+
+        solicitudCGO.setDeletedAt(LocalDateTime.now());
+        solicitudCGORepository.persist(solicitudCGO);
     }
 }

@@ -12,19 +12,19 @@ public class ResultadoCGO {
 
     private String observaciones;
 
-    @ManyToOne
-    private Colaborador patologo;
+    private String patologo;
 
     @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "resultado_id", referencedColumnName = "id")
     private List<ArchivoAdjunto> archivosAdjuntos;
 
-    // catalogo de enfermedades
+    @ManyToOne
+    private CodigoEnfermedades codigoEnfermedades;
 
     public ResultadoCGO() {
     }
 
-    public ResultadoCGO(Long id, String observaciones, Colaborador patologo, List<ArchivoAdjunto> archivosAdjuntos) {
+    public ResultadoCGO(Long id, String observaciones, String patologo, List<ArchivoAdjunto> archivosAdjuntos) {
         this.id = id;
         this.observaciones = observaciones;
         this.patologo = patologo;
@@ -47,11 +47,11 @@ public class ResultadoCGO {
         this.observaciones = observaciones;
     }
 
-    public Colaborador getPatologo() {
+    public String getPatologo() {
         return patologo;
     }
 
-    public void setPatologo(Colaborador patologo) {
+    public void setPatologo(String patologo) {
         this.patologo = patologo;
     }
 
@@ -65,5 +65,13 @@ public class ResultadoCGO {
 
     public boolean addArchivoAdjunto(ArchivoAdjunto archivoAdjunto) {
         return archivosAdjuntos.add(archivoAdjunto);
+    }
+
+    public CodigoEnfermedades getCodigoEnfermedades() {
+        return codigoEnfermedades;
+    }
+
+    public void setCodigoEnfermedades(CodigoEnfermedades codigoEnfermedades) {
+        this.codigoEnfermedades = codigoEnfermedades;
     }
 }
