@@ -17,6 +17,7 @@ dependencies {
     implementation enforcedPlatform("${quarkusPlatformGroupId}:quarkus-amazon-services-bom:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-hibernate-validator'
     implementation 'io.quarkiverse.jasperreports:quarkus-jasperreports:1.0.7'
+    implementation 'xerces:xercesImpl:2.12.2'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-hibernate-orm-panache'
     implementation 'io.quarkus:quarkus-rest-jackson'
