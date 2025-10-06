@@ -37,7 +37,7 @@ public class HomeService {
     public HomeDto getHomeDataByUserId(String userId, List<String> userRoles) {
         HomeDto homeDto = null;
 
-        if (userRoles.contains(SimalsiRoles.ADMIN)) {
+        if (userRoles.contains(SimalsiRoles.ADMIN) || userRoles.contains(SimalsiRoles.HISTOTECNOLOGO) || userRoles.contains(SimalsiRoles.PATOLOGO)) {
             homeDto = getHomeDataAdmin();
         } else if (userRoles.contains(SimalsiRoles.RECEPCIONISTA)) {
             homeDto = getHomeDataRecepcionista(userId);

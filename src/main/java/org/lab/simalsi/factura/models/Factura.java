@@ -53,6 +53,8 @@ public class Factura {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime deletedAt;
+
     public Factura() {
         this.descuentos = new ArrayList<>();
         this.detalle = new ArrayList<>();
@@ -212,5 +214,13 @@ public class Factura {
         }
 
         return saldoPendiente;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

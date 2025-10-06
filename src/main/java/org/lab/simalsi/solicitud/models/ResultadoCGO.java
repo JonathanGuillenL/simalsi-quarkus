@@ -10,6 +10,7 @@ public class ResultadoCGO {
     @Id
     private Long id;
 
+    @Column(length = 500)
     private String observaciones;
 
     private String patologo;

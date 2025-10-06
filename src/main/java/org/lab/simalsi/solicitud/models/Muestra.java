@@ -21,6 +21,7 @@ public class Muestra {
 
     private Double pesoMuestra;
 
+    @Column(length = 500)
     private String descripcionMacroscopica;
 
     private String histotecnologo;

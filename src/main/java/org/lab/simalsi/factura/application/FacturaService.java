@@ -227,4 +227,12 @@ public class FacturaService {
             return null;
         }
     }
+
+    public void deshabilitarFactura(Long id) {
+        Factura factura = facturaRepository.findByIdOptional(id)
+            .orElseThrow(() -> new NotFoundException("Factura no encontrada."));
+
+        factura.setDeletedAt(LocalDateTime.now());
+        facturaRepository.persist(factura);
+    }
 }

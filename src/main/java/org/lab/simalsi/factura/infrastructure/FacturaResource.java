@@ -128,4 +128,12 @@ public class FacturaResource {
     public FacturaResponseDto anularPago(@RestPath Long facturaId, @RestPath Long pagoId) {
         return pagoService.anularPago(facturaId, pagoId);
     }
+
+    @DELETE
+    @Path("{id}")
+    @Transactional
+    @RolesAllowed({SimalsiRoles.ADMIN})
+    public void destroy(@RestPath Long id) {
+        facturaService.deshabilitarFactura(id);
+    }
 }
