@@ -13,6 +13,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.lab.simalsi.cliente.infrastructure.ClienteRepository;
 import org.lab.simalsi.cliente.models.Cliente;
+import org.lab.simalsi.cliente.models.TipoCliente;
 import org.lab.simalsi.colaborador.infrastructure.ColaboradorRepository;
 import org.lab.simalsi.colaborador.models.Colaborador;
 import org.lab.simalsi.common.GeneralErrorException;
@@ -159,6 +160,13 @@ public class SolicitudService {
 
         if (solicitudCGODto.medicoTratanteId() != null) {
             medicoTratante = medicoTratanteRepository.findByIdOptional(solicitudCGODto.medicoTratanteId())
+                .orElseThrow(() -> new NotFoundException("Médico tratante no encontrado."));
+            solicitudCGO.setMedicoTratante(medicoTratante);
+        }
+
+        if (Objects.equals(cliente.getTipoCliente(), TipoCliente.MEDICO_AFILIADO)) {
+            Long personaId = cliente.getPersona().getId();
+            medicoTratante = medicoTratanteRepository.findByPersonaId(personaId)
                 .orElseThrow(() -> new NotFoundException("Médico tratante no encontrado."));
             solicitudCGO.setMedicoTratante(medicoTratante);
         }

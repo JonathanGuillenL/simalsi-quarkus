@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class SolicitudCGO extends DetalleFactura {
     private LocalDateTime fechaSolicitud;
 
+    @Column(length = 500)
     private String observaciones;
 
     private String recepcionista;
