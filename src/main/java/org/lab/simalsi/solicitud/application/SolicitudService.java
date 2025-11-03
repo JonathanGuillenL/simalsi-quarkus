@@ -31,6 +31,7 @@ import org.lab.simalsi.solicitud.models.SolicitudEstado;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalUnit;
@@ -169,6 +170,9 @@ public class SolicitudService {
             medicoTratante = medicoTratanteRepository.findByPersonaId(personaId)
                 .orElseThrow(() -> new NotFoundException("Médico tratante no encontrado."));
             solicitudCGO.setMedicoTratante(medicoTratante);
+        } else if (Objects.equals(cliente.getTipoCliente(), TipoCliente.CLIENTE_ESPONTANEO)) {
+            var ticket = generateRandomPassword(6);
+            solicitudCGO.setTicket(ticket);
         }
 
         ServicioLaboratorio servicioLaboratorio = servicioLaboratorioRepository.findByIdOptional(solicitudCGODto.servicioLaboratorioId())
@@ -214,14 +218,24 @@ public class SolicitudService {
         ClassLoader classLoader = Thread.currentThread()
             .getContextClassLoader();
 
-        try (InputStream inputStream = classLoader.getResourceAsStream("reportes/solicitud_examen.jasper")) {
-            JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, params, dataSource);
-            return JasperExportManager.exportReportToPdf(jasperPrint);
-        } catch (JRException | IOException e) {
-            Log.error(e.getMessage());
-            Log.error(e.getCause());
-            return null;
+        Cliente cliente = solicitudCGO.getCliente();
+        if (cliente != null) {
+            var report = switch (cliente.getTipoCliente()) {
+                case CLIENTE_ESPONTANEO -> "reportes/solicitud_examen_espontaneo.jasper";
+                case NONE, CLINICA_AFILIADA, MEDICO_AFILIADO -> "reportes/solicitud_examen.jasper";
+            };
+
+            try (InputStream inputStream = classLoader.getResourceAsStream(report)) {
+                JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, params, dataSource);
+                return JasperExportManager.exportReportToPdf(jasperPrint);
+            } catch (JRException | IOException e) {
+                Log.error(e.getMessage());
+                Log.error(e.getCause());
+                return null;
+            }
         }
+
+        return null;
     }
 
     public void desactivarSolicitud(Long id) {
@@ -234,5 +248,15 @@ public class SolicitudService {
 
         solicitudCGO.setDeletedAt(LocalDateTime.now());
         solicitudCGORepository.persist(solicitudCGO);
+    }
+
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 }

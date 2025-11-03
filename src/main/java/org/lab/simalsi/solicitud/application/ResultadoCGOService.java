@@ -158,4 +158,35 @@ public class ResultadoCGOService {
             return null;
         }
     }
+
+    public byte[] generarResultadoPdfByTicket(String username, String ticket) {
+        HashMap<String, Object> params = new HashMap<>();
+
+        SolicitudCGO solicitudCGO = solicitudCGORepository.findByUsernameAndTicket(username, ticket)
+            .orElseThrow(() -> new NotFoundException("Solicitud CGO no encontrada."));
+
+        if (solicitudCGO.getResultadoCGO() != null) {
+            Colaborador recepcionista = colaboradorRepository.findColaboradorByUsername(solicitudCGO.getRecepcionista())
+                .orElseThrow(() -> new NotFoundException("Recepcionista no encontrado"));
+
+            Colaborador patologo = colaboradorRepository.findColaboradorByUsername(solicitudCGO.getResultadoCGO().getPatologo())
+                .orElseThrow(() -> new NotFoundException("Patólogo no encontrado"));
+
+            ResultadoJRDataSource dataSource = new ResultadoJRDataSource(List.of(solicitudCGO), recepcionista, patologo);
+
+            ClassLoader classLoader = Thread.currentThread()
+                .getContextClassLoader();
+
+            try (InputStream inputStream = classLoader.getResourceAsStream("reportes/resultado_examen.jasper")) {
+                JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, params, dataSource);
+                return JasperExportManager.exportReportToPdf(jasperPrint);
+            } catch (JRException | IOException e) {
+                Log.error(e.getMessage());
+                Log.error(e.getCause());
+                return null;
+            }
+        }
+
+        throw new NotFoundException("El resultado no ha sido emitido.");
+    }
 }

@@ -11,10 +11,7 @@ import org.lab.simalsi.solicitud.models.SolicitudCGO;
 import org.lab.simalsi.solicitud.models.SolicitudEstado;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ApplicationScoped
 public class SolicitudCGORepository implements PanacheRepository<SolicitudCGO> {
@@ -25,6 +22,10 @@ public class SolicitudCGORepository implements PanacheRepository<SolicitudCGO> {
 
     public PanacheQuery<SolicitudCGO> findByClienteIdAndEstado(Long clienteId, SolicitudEstado estado) {
         return find("cliente.id=?1 and estado=?2 and deletedAt is null", clienteId, estado);
+    }
+
+    public Optional<SolicitudCGO> findByUsernameAndTicket(String username, String ticket) {
+        return find("cliente.username=?1 and ticket=?2", username, ticket).firstResultOptional();
     }
 
     public List<SolicitudCountDto> countLast12Month() {

@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 public class SolicitudCGO extends DetalleFactura {
     private LocalDateTime fechaSolicitud;
 
+    // Solo clientes espontaneo
+    private String ticket;
+
     @Column(length = 500)
     private String observaciones;
 
@@ -46,11 +49,12 @@ public class SolicitudCGO extends DetalleFactura {
         this.fechaSolicitud = LocalDateTime.now();
     }
 
-    public SolicitudCGO(Long id, Double precio, boolean facturado, LocalDateTime fechaSolicitud, String observaciones, String recepcionista, Cliente cliente,
+    public SolicitudCGO(Long id, Double precio, boolean facturado, LocalDateTime fechaSolicitud, String ticket, String observaciones, String recepcionista, Cliente cliente,
                         Paciente paciente, MedicoTratante medicoTratante, LocalDateTime fechaTomaMuestra, ServicioLaboratorio servicioLaboratorio, Muestra muestra,
                         ResultadoCGO resultadoCGO, SolicitudEstado estado) {
         super(id, precio, facturado, servicioLaboratorio);
         this.fechaSolicitud = fechaSolicitud;
+        this.ticket = ticket;
         this.observaciones = observaciones;
         this.recepcionista = recepcionista;
         this.cliente = cliente;
@@ -68,6 +72,14 @@ public class SolicitudCGO extends DetalleFactura {
 
     public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
         this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public String getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
     }
 
     public String getObservaciones() {

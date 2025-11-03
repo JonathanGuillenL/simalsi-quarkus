@@ -123,4 +123,22 @@ public class ResultadoCGOResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
+
+    @GET
+    @Path("/print")
+    @PermitAll
+    @Produces("application/pdf")
+    public Response print(@RestQuery String username, @RestQuery String ticket) {
+        byte[] pdf = resultadoCGOService.generarResultadoPdfByTicket(username, ticket);
+
+        if (pdf == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                .build();
+        }
+
+        return Response
+            .ok(pdf, "application/pdf")
+            .header("Content-Disposition", "inline; filename=\"Report.pdf\"")
+            .build();
+    }
 }

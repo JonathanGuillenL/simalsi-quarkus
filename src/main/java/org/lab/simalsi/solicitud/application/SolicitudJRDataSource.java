@@ -109,6 +109,15 @@ public class SolicitudJRDataSource implements JRDataSource {
             return recepcionista.getFullname();
         }
 
+        if ("username".equals(fieldName)) {
+            var cliente = solicitudCGO.getCliente();
+            return cliente.getUsername();
+        }
+
+        if ("numero_ticket".equals(fieldName)) {
+            return solicitudCGO.getTicket();
+        }
+
         return null;
     }
 }
