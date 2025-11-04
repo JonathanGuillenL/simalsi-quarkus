@@ -1,5 +1,5 @@
 <#macro emailLayout>
-<html>
+<html lang="es">
 <body>
     <div style="background: url('${url.resourcesUrl}/img/keycloak-bg.jpg'); background-size: cover; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: ui-sans-serif, system-ui, sans-serif">
         <div style="background-color: #124dac; border-radius: 8px; padding: 4px;">
