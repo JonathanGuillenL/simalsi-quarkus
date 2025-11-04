@@ -87,6 +87,7 @@ public class ResultadoJRDataSource implements JRDataSource {
                 PersonaNatural persona = medicoTratante.getPersona();
                 return persona.getNombre() + " " + persona.getApellido();
             }
+            return "-";
         }
 
         if ("codigo_sanitario".equals(fieldName)) {
@@ -94,6 +95,7 @@ public class ResultadoJRDataSource implements JRDataSource {
             if (medicoTratante != null) {
                 return solicitudCGO.getMedicoTratante().getCodigoSanitario();
             }
+            return "-";
         }
 
         if ("creado_en".equals(fieldName)) {
