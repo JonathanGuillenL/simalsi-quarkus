@@ -80,7 +80,7 @@ public class KeycloakService {
         UserResource userResource = usersResource.get(userId);
 
         if (keycloakUserDto.email() != null && !keycloakUserDto.email().isEmpty()) {
-            userResource.executeActionsEmail("quarkus-app", "https://nuxt.simalsi.com/", List.of("UPDATE_PASSWORD"));
+            // userResource.executeActionsEmail("quarkus-app", "https://nuxt.simalsi.com/", List.of("UPDATE_PASSWORD"));
             userDto = new UserDto(username, "");
         }
 
