@@ -102,7 +102,7 @@ public class ClienteService {
             throw new RuntimeException("Email ya se encuentra registrado.");
         }
 
-        if (clienteDto.hasPaciente()) {
+        if (clienteDto.hasPaciente() && clienteDto.pacienteId() != null) {
             Paciente paciente = pacienteRepository.findByIdOptional(clienteDto.pacienteId())
                 .orElseThrow(() -> new NotFoundException("Paciente no encontrado."));
             paciente.setNacimiento(clienteDto.nacimiento());

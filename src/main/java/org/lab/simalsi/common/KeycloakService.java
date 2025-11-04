@@ -80,7 +80,8 @@ public class KeycloakService {
         UserResource userResource = usersResource.get(userId);
 
         if (keycloakUserDto.email() != null && !keycloakUserDto.email().isEmpty()) {
-            userResource.executeActionsEmail("frontend-spa", "http://localhost:5173/", List.of("UPDATE_PASSWORD"));
+            userResource.executeActionsEmail("quarkus-app", "https://nuxt.simalsi.com/", List.of("UPDATE_PASSWORD"));
+            userDto = new UserDto(username, "");
         }
 
         RoleRepresentation role = realmResource.roles().get(keycloakUserDto.role()).toRepresentation();
