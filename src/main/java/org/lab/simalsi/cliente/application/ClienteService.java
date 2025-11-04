@@ -116,6 +116,15 @@ public class ClienteService {
             persona.setDireccion(clienteDto.direccion());
 
             pacienteRepository.persist(paciente);
+        } else if (clienteDto.hasPaciente()) {
+            persona = personaMapper.toModel(clienteDto);
+            personaRepository.persist(persona);
+
+            var paciente = new Paciente();
+            paciente.setPersona(persona);
+            paciente.setSexo(clienteDto.sexo());
+            paciente.setNacimiento(clienteDto.nacimiento());
+            pacienteRepository.persist(paciente);
         } else {
             persona = personaMapper.toModel(clienteDto);
             personaRepository.persist(persona);
